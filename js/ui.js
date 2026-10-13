@@ -90,6 +90,13 @@ function llaveBox(fase,ll){
  </div>`;
 }
 
+/* Etiqueta de definición matemática (campeón / ascendido / descendido) */
+const CLINCH={champ:['Campeón','gd'],promo:['Ascendido','bl'],releg:['Descendido','lv']};
+function clinchTag(tags){
+ const k=tags.includes('champ')?'champ':tags.includes('promo')?'promo':tags.includes('releg')?'releg':null;
+ return k?`<span class="clinch ${CLINCH[k][1]}" title="Definido matemáticamente">${CLINCH[k][0]}</span>`:'';
+}
+
 /* ---- Suspendidos de un partido (modo editor) ---- */
 const suspMotivo=r=>[r.genY?`<span class="pill y">🟨 amarillas</span>`:'',r.genR?`<span class="pill r">🟥 roja${r.genR>1?'s':''}</span>`:''].join('');
 const suspPend=r=>`<span class="pill pend">⛔ ${r.pend} partido${r.pend>1?'s':''}</span>`;
@@ -115,7 +122,7 @@ function suspensionAlert(m){
 /* ---- Al finalizar un partido: revisión de la carga + suspensiones cumplidas ---- */
 const matchLabel=m=>`${m.llave?`Copa THC · ${esc(m.fase)}`:`Liga · Fecha ${m.round}`} · ${tn(m.home)} ${m.hg}-${m.ag} ${tn(m.away)}`;
 function finishReview(m){
- const issues=matchIssues(m);
+ const issues=[...matchIssues(m),...ineligibleIn(m)];
  // Estaban suspendidos para este partido y no figuran en sus eventos: muy probablemente no jugaron.
  const susp=suspendedFor(m).filter(r=>!(m.ev||[]).some(e=>e.p===r.p.id));
  if(!issues.length&&!susp.length){toast(`Partido finalizado ✓ ${T(m.home)?.name} ${m.hg}-${m.ag} ${T(m.away)?.name}`,'ok');return}
@@ -131,7 +138,7 @@ function finishReview(m){
    let n=0;
    susp.forEach((r,i)=>{if(!root.querySelector('#fs'+i)?.checked)return;const p=(r.isCup?db.cupPlayers:db.players).find(x=>x.id===r.p.id);if(p){p.suspDone=(p.suspDone||0)+1;n++}});
    closeModal();
-   if(n){commit();toast(`${n} suspensión${n>1?'es':''} marcada${n>1?'s':''} como cumplida${n>1?'s':''}`,'ok')}
+   if(n)commit(`${n} suspensión${n>1?'es':''} marcada${n>1?'s':''} como cumplida${n>1?'s':''}`);
   };
  });
 }
@@ -151,11 +158,13 @@ function pendingReview(){
 }
 
 /* ---- Avisos no bloqueantes ---- */
-function toast(msg,type='info',ms=3500){
+function toast(msg,type='info',ms=3500,action){
  const root=document.getElementById('toasts');if(!root)return;
  while(root.children.length>=3)root.firstElementChild.remove(); // máximo 3 avisos a la vez
  const el=document.createElement('div');el.className='toast '+type;el.setAttribute('role',type==='error'?'alert':'status');
- el.textContent=msg;root.appendChild(el);
+ const txt=document.createElement('span');txt.textContent=msg;el.appendChild(txt);
+ if(action){const b=document.createElement('button');b.className='tact';b.textContent=action.label;b.onclick=ev=>{ev.stopPropagation();close();action.fn()};el.appendChild(b)}
+ root.appendChild(el);
  requestAnimationFrame(()=>el.classList.add('in'));
  const close=()=>{el.classList.remove('in');setTimeout(()=>el.remove(),250)};
  el.onclick=close;if(ms)setTimeout(close,ms);

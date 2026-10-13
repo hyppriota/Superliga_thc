@@ -214,3 +214,12 @@ a:hover{text-decoration:underline}
 .modal .rev-check input{display:inline-block;width:auto;margin:0}
 .rev-link{display:flex;flex-direction:column;gap:2px;padding:8px 10px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);font-size:12.5px}
 .rev-link:hover{border-color:var(--bl);text-decoration:none}
+.toast{display:flex;align-items:center;gap:12px}
+.toast span{flex:1}
+.tact{flex:none;background:none;border:1px solid #ffffff66;color:#fff;border-radius:6px;padding:4px 10px;font-weight:600;font-size:12.5px}
+.tact:hover{background:#ffffff1f}
+/* Definiciones matemáticas */
+.clinch{display:inline-block;margin-left:6px;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#fff;flex:none;white-space:nowrap}
+.clinch.gd{background:var(--gd);color:#3a2c05}
+.clinch.bl{background:var(--bl)}
+.clinch.lv{background:var(--lv)}

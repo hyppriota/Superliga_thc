@@ -91,10 +91,23 @@ function render(){
    Cada cambio: se aplican las reglas automáticas (copa, estadísticas),
    se redibuja al instante y se guarda en segundo plano solo lo que cambió. */
 let lastDecided={}; // llaves definidas en el último estado ya procesado
-function commit(){
+/* Deshacer: se guarda cómo estaba todo después del último cambio; el siguiente cambio
+   ofrece volver a ese estado durante unos segundos. Solo el último cambio. */
+let lastState=null;
+const snapshot=()=>JSON.stringify({teams:db.teams,players:db.players,matches:db.matches,cup:db.cup,cupPlayers:db.cupPlayers});
+function commit(label){
+ const prev=lastState;
  applyRules();render();if(edit)Data.save(db);
  announceCup(lastDecided);
  lastDecided=decidedLlaves();
+ lastState=snapshot();
+ if(edit&&label!==false&&prev)toast(label||'Cambio guardado','info',6000,{label:'Deshacer',fn:()=>undo(prev)});
+}
+function undo(prev){
+ Object.assign(db,JSON.parse(prev));
+ S.evOpen=S.evOpen&&findM(S.evOpen)?S.evOpen:null;
+ commit(false);
+ toast('Cambio deshecho','ok',2500);
 }
 /* Avisos de copa: cuando un cambio define una llave, avisa quién pasa y a qué ronda. */
 function decidedLlaves(){const s={};[...new Set(db.cup.map(c=>c.llave))].forEach(ll=>{const a=llaveAgg(ll);if(a?.decided)s[ll]=a.winner});return s}
@@ -122,7 +135,8 @@ function upd(id,k,v){
  if(k==='hg'||k==='ag')m[k]=v===''?0:Math.max(0,+v||0);
  else if(k==='pl'||k==='pv')m[k]=v===''?null:Math.max(0,+v||0);
  else m[k]=v===''?null:v;
- commit();
+ const ST={prox:'Próximo',vivo:'En juego',fin:'Finalizado'};
+ commit(k==='status'?`Estado: ${ST[v]||v}`:(k==='hg'||k==='ag')?'Marcador cambiado':(k==='pl'||k==='pv')?'Penales cambiados':(k==='home'||k==='away')?'Equipo cambiado':'Cambio guardado');
  if(kickoff)setTimeout(()=>suspensionAlert(m),0); // al pasar a "En juego": avisa quién no puede jugar
  if(finish)setTimeout(()=>finishReview(m),0);    // al finalizar: revisa la carga y las suspensiones cumplidas
 }
@@ -141,12 +155,12 @@ async function del(kind,id){
  }
  if(!await confirmDialog(msg))return;
  db[kind]=list.filter(x=>x.id!==id);
- commit();
+ commit(kind==='teams'||kind==='players'?`${item.name} eliminado`:'Partido eliminado');
 }
-function setCaptain(id){const p=db.players.find(x=>x.id===id);if(!p)return;const was=p.captain;db.players.filter(x=>x.team===p.team).forEach(x=>x.captain=false);p.captain=!was;commit()}
-function setPos(id,v){const p=db.players.find(x=>x.id===id);if(!p)return;p.position=v||null;commit()}
-function setTF(id,k,v){const t=T(id);if(!t)return;t[k]=v.trim()||null;commit()}
-function bumpDone(id,isCup,delta){const p=(isCup?db.cupPlayers:db.players).find(x=>x.id===id);if(!p)return;p.suspDone=Math.max(0,(p.suspDone||0)+delta);commit()}
+function setCaptain(id){const p=db.players.find(x=>x.id===id);if(!p)return;const was=p.captain;db.players.filter(x=>x.team===p.team).forEach(x=>x.captain=false);p.captain=!was;commit(p.captain?`${p.name} es capitán`:'Capitán quitado')}
+function setPos(id,v){const p=db.players.find(x=>x.id===id);if(!p)return;p.position=v||null;commit('Posición cambiada')}
+function setTF(id,k,v){const t=T(id);if(!t)return;t[k]=v.trim()||null;commit(k==='dt'?'DT cambiado':k==='stadium'?'Estadio cambiado':'Cambio guardado')}
+function bumpDone(id,isCup,delta){const p=(isCup?db.cupPlayers:db.players).find(x=>x.id===id);if(!p)return;p.suspDone=Math.max(0,(p.suspDone||0)+delta);commit(delta>0?`Suspensión de ${p.name} cumplida`:`Suspensión de ${p.name} restaurada`)}
 
 function toggleEv(id){S.evOpen=S.evOpen===id?null:id;render()}
 /* El marcador sigue a los goles cargados mientras estén "en sintonía": si el marcador
@@ -162,13 +176,15 @@ function addEv(id){
  const m=findM(id),t=document.getElementById('et').value;
  m.ev=m.ev||[];
  const was=inSync(m);
- if(t==='OG'){m.ev.push({t:'OG',team:document.getElementById('eteam').value});syncScore(m,was);commit();return}
+ if(t==='OG'){m.ev.push({t:'OG',team:document.getElementById('eteam').value});syncScore(m,was);commit('Autogol agregado');return}
  const p=document.getElementById('ep').value;
  if(!p)return toast('Elegí un jugador','error');
+ const susp=suspendedFor(m).find(r=>r.p.id===p); // ¿estaba suspendido para este partido?
  if(t==='M')m.ev=m.ev.filter(e=>e.t!=='M'); // un solo MVP por partido
  m.ev.push({p,t});LASTP[id]=p;
  if(t==='G')syncScore(m,was);
- commit();
+ commit({G:'Gol',Y:'Amarilla',R:'Roja',M:'MVP'}[t]+` de ${anyP(p)?.name} `+(t==='Y'||t==='R'?'agregada':'agregado'));
+ if(susp)toast(`⚠ ${susp.p.name} estaba suspendido para este partido (${[susp.genY?'amarillas':'',susp.genR?'roja':''].filter(Boolean).join(' y ')}). Revisá si hubo alineación indebida.`,'error',8000);
  // Tarjeta que genera una suspensión nueva en esta competición
  if(t==='Y'||t==='R'){
   const isCup=!!m.llave,c=cardsOf(p,isCup),prev={y:c.y-(t==='Y'),r:c.r-(t==='R')};
@@ -179,32 +195,32 @@ function delEv(id,i){
  const m=findM(id),was=inSync(m),e=m.ev[i];
  m.ev.splice(i,1);
  if(e&&(e.t==='G'||e.t==='OG'))syncScore(m,was);
- commit();
+ commit('Evento quitado');
 }
 
 const val=id=>document.getElementById(id).value;
 function addTeam(){
  const n=val('tnm').trim();if(!n)return toast('Escribí un nombre','error');
  if(db.teams.some(t=>t.name.toLowerCase()===n.toLowerCase()))return toast('Ya existe un equipo con ese nombre','error');
- db.teams.push({id:uid('t'),name:n,div:val('td'),fed:val('tf')||null});commit();toast(`Equipo ${n} agregado`,'ok');
+ db.teams.push({id:uid('t'),name:n,div:val('td'),fed:val('tf')||null});commit(`Equipo ${n} agregado`);
 }
 function addPlayer(){
  const n=val('pn').trim(),team=val('pt');if(!n||!team)return toast('Completá el nombre y el equipo','error');
  db.players.push({id:uid('p'),name:n,team,position:val('pp')||null,goals:0,mvp:0,yc:0,rc:0,seasonId:SEASON_ID});
- document.getElementById('pn').value='';commit();toast(`${n} agregado a ${T(team)?.name}`,'ok');
+ document.getElementById('pn').value='';commit(`${n} agregado a ${T(team)?.name}`);
 }
 function addMatch(){
  const r=+val('mr'),h=val('mh'),a=val('ma');
  if(!r||h===a)return toast('Indicá la fecha y dos equipos distintos','error');
  db.matches.push({id:uid('m'),div:val('md'),round:r,home:h,away:a,hg:0,ag:0,status:'prox',ev:[],season_id:SEASON_ID});
- commit();toast('Partido agregado','ok');go('fixture',{div:val('md'),round:r});
+ commit('Partido agregado');go('fixture',{div:val('md'),round:r});
 }
 function addCup(){
  const l=val('cl').trim(),h=val('ch'),a=val('cw'),leg=+val('cg');
  if(!l||!h||!a||h===a)return toast('Indicá la llave y dos equipos distintos','error');
  if(cupLeg(l,leg))return toast(`Ya existe el partido ${leg} de la llave ${l}`,'error');
  db.cup.push({id:uid('c'),fase:val('cf'),llave:l,leg,home:h,away:a,hg:0,ag:0,pl:null,pv:null,status:'prox',ev:[],season_id:SEASON_ID});
- commit();toast('Partido de copa agregado','ok');go('copa');
+ commit('Partido de copa agregado');go('copa');
 }
 function exportBackup(){
  const a=document.createElement('a');
@@ -218,7 +234,7 @@ function importBackup(el){
   let d;try{d=JSON.parse(r.result);if(!d.teams||!d.matches)throw 0}catch(e){return toast('El archivo no tiene el formato esperado (teams, players, matches, cup).','error',6000)}
   if(!await confirmDialog(`Esto reemplaza TODOS los datos en Supabase por los del archivo (${d.teams.length} equipos, ${(d.players||[]).length} jugadores, ${d.matches.length} partidos). ¿Seguir?`,'Reemplazar'))return;
   d.players=d.players||[];d.cup=d.cup||[];d.cupPlayers=d.cupPlayers||[];d.temporadas=db.temporadas;
-  db=d;applyRules();lastDecided=decidedLlaves();render();
+  db=d;applyRules();lastDecided=decidedLlaves();lastState=snapshot();render();
   await Data.save(db,{allowMass:true});
   if(Data.status!=='error')toast('Datos importados','ok');
  };
@@ -258,7 +274,7 @@ async function boot(){
  }
  loaded=true;
  applyRules();
- lastDecided=decidedLlaves();
+ lastDecided=decidedLlaves();lastState=snapshot();
  if(!curHash)curHash='#/tablas';
  try{history.replaceState({d:0,y:0},'',curHash)}catch(e){historyOK=false}
  hashToState();

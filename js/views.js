@@ -5,7 +5,8 @@ const V={
  tablas(){
   const ms=db.matches.filter(m=>m.div===S.div);
   const t=standings(S.div),n=t.length,z=i=>i===0?'z0':(S.div==='thc'?(i>=n-3?'z3':''):(i<3?'z2':(i>=n-3?'z3':'')));
-  const champ=ms.length>0&&ms.every(m=>m.status==='fin');
+  const cl=clinches(S.div);
+  const champ=Object.values(cl).some(x=>x.includes('champ'));
   const rounds=[...new Set(ms.map(m=>m.round))].sort((a,b)=>a-b);
   const prev=posMoves(S.div);
   const mv=(id,i)=>{const p=prev[id];if(!p)return'';const d=p-(i+1);return d>0?`<span class="mv up" title="Subió ${d}">▲</span>`:d<0?`<span class="mv dn" title="Bajó ${-d}">▼</span>`:'<span class="mv eq">–</span>'};
@@ -14,8 +15,8 @@ const V={
   const curMs=ms.filter(m=>m.round===curR);
   const resumen=curMs.length?`<div class="box"><h3>${divHeader(S.div)}<span>Fecha ${curR}</span></h3>${curMs.map(mrow).join('')}</div>`:'';
   return seg()+resumen+`<div class="box"><h3>${divHeader(S.div)}<span>Posiciones</span></h3><div style="overflow-x:auto"><table class="postab"><tr><th>#</th><th style="text-align:left">Equipo</th><th>PTS</th><th title="Partidos jugados">PJ</th><th title="Ganados">G</th><th title="Empatados">E</th><th title="Perdidos">P</th><th title="Goles a favor : en contra">GF:GC</th><th title="Diferencia de gol" style="border-left:1px solid var(--ln)">+/-</th><th style="border-left:1px solid var(--ln)">Forma</th><th>Próximo</th></tr>`+
-   t.map((r,i)=>{const dg=r.gf-r.gc;return`<tr class="${z(i)}"><td><span class="pos">${i+1}</span>${mv(r.id,i)}</td><td class="n"><a href="#/equipos?team=${r.id}">${crest(r.id)}${tn(r.id)}</a></td><td><span class="ptsb">${r.pts}</span></td><td>${r.pj}</td><td>${r.g}</td><td>${r.e}</td><td>${r.p}</td><td class="mu">${r.gf}:${r.gc}</td><td style="border-left:1px solid var(--ln)">${dg>0?'+'+dg:dg}</td><td style="border-left:1px solid var(--ln)"><div class="frm">${formGuide(r.id,S.div)}</div></td><td>${nextOpp(r.id,S.div)}</td></tr>`}).join('')+
-   `</table></div><div class="lg"><i style="background:var(--gd)"></i>${champ?'Campeón':'Líder'}${S.div==='thc'?'<i style="background:var(--lv)"></i>Descenso a Ligas Regionales (3)':'<i style="background:var(--bl)"></i>Ascenso a SuperLiga THC (3)<i style="background:var(--lv)"></i>Descenso a Ligas Regionales (3)'} · ▲▼ posición vs. la fecha anterior · Forma: de más antiguo (izq.) a más reciente (der.), luego el próximo rival</div></div>
+   t.map((r,i)=>{const dg=r.gf-r.gc;return`<tr class="${z(i)}"><td><span class="pos">${i+1}</span>${mv(r.id,i)}</td><td class="n"><a href="#/equipos?team=${r.id}">${crest(r.id)}${tn(r.id)}</a>${clinchTag(cl[r.id]||[])}</td><td><span class="ptsb">${r.pts}</span></td><td>${r.pj}</td><td>${r.g}</td><td>${r.e}</td><td>${r.p}</td><td class="mu">${r.gf}:${r.gc}</td><td style="border-left:1px solid var(--ln)">${dg>0?'+'+dg:dg}</td><td style="border-left:1px solid var(--ln)"><div class="frm">${formGuide(r.id,S.div)}</div></td><td>${nextOpp(r.id,S.div)}</td></tr>`}).join('')+
+   `</table></div><div class="lg"><i style="background:var(--gd)"></i>${champ?'Campeón':'Líder'}${S.div==='thc'?'<i style="background:var(--lv)"></i>Descenso a Ligas Regionales (3)':'<i style="background:var(--bl)"></i>Ascenso a SuperLiga THC (3)<i style="background:var(--lv)"></i>Descenso a Ligas Regionales (3)'} · Las etiquetas Campeón, Ascendido y Descendido aparecen cuando ya es matemáticamente seguro · ▲▼ posición vs. la fecha anterior · Forma: de más antiguo (izq.) a más reciente (der.), luego el próximo rival</div></div>
    <div class="box"><h3>Fixture</h3><div class="f">${rounds.map(r=>`<button onclick="go('fixture',{round:${r}})">Fecha ${r}</button>`).join('')}</div></div>`;
  },
 
@@ -128,7 +129,7 @@ const V={
   const playerRow=p=>`<div class="rw"><span>${edit?`<select class="posel" aria-label="Posición" onchange="setPos('${p.id}',this.value)">${['','POR','DEF','MED','DEL'].map(v=>`<option value="${v}" ${p.position===v||(!p.position&&!v)?'selected':''}>${v||'—'}</option>`).join('')}</select>`:posChip(p.position)}${esc(p.name)}${p.captain?' <span class="cbadge" title="Capitán">C</span>':''}${edit?` <button class="cbtn ${p.captain?'on':''}" title="Marcar como capitán" onclick="setCaptain('${p.id}')">C</button> <a class="x" onclick="del('players','${p.id}')">✕</a>`:''}</span>${pills(p)}</div>`;
   return `<div class="seg"><button onclick="goBack()">← Volver</button></div>
   <div class="g2">
-   <div class="box tcard"><div>${crest(t.id)}</div><div><h3 style="border:0;padding:0">${esc(t.name)}</h3><div class="mu" style="font-size:12px;display:flex;align-items:center">${DLOGO[t.div]?`<img class="tl" alt="" src="${DLOGO[t.div]}">`:''}${DIVS[t.div]} · ${pos}º</div><div class="mu" style="font-size:12px">${esc(t.stadium||'Estadio por cargar')}</div></div></div>
+   <div class="box tcard"><div>${crest(t.id)}</div><div><h3 style="border:0;padding:0">${esc(t.name)}</h3><div class="mu" style="font-size:12px;display:flex;align-items:center">${DLOGO[t.div]?`<img class="tl" alt="" src="${DLOGO[t.div]}">`:''}${DIVS[t.div]} · ${pos}º${clinchTag(clinches(t.div)[t.id]||[])}</div><div class="mu" style="font-size:12px">${esc(t.stadium||'Estadio por cargar')}</div></div></div>
    <div class="box"><h3>Próximo partido</h3>${nm?`<div class="npm" style="cursor:pointer" title="Ver historial entre estos equipos" onclick="goH2H('${nm.home}','${nm.away}')"><div>${crest(t.id)}<span>${tn(t.id)}</span></div><b>${esc(nm.time||(nm.round?'F'+nm.round:''))}</b><div>${crest(nm.home===t.id?nm.away:nm.home)}<span>${tn(nm.home===t.id?nm.away:nm.home)}</span></div></div><div class="ven">🏟 ${esc(T(nm.home)?.stadium||'Estadio por confirmar')}</div><div class="mu" style="text-align:center;font-size:11px">${nm.cup?'Copa THC · '+esc(nm.fase):'Liga · Fecha '+nm.round}</div>`:'<div class="empty">Sin partidos programados.</div>'}</div>
   </div>
   <div class="g2">

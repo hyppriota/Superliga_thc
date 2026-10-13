@@ -197,7 +197,17 @@ function matchIssues(m){
  const out=[],g=evGoals(m),mv=(m.ev||[]).filter(e=>e.t==='M').length;
  if(g.h!==m.hg||g.a!==m.ag)out.push(`Los goles cargados (${g.h}-${g.a}) no coinciden con el marcador (${m.hg}-${m.ag}).`);
  if(!mv)out.push('Falta cargar el MVP.');else if(mv>1)out.push(`Hay ${mv} MVP cargados; debería haber uno solo.`);
+ // Tercer partido o final a partido único: si terminó empatado, los penales definen la llave
+ if(m.llave&&(m.leg===3||(m.fase==='FINAL'&&!cupLeg(m.llave,2)))&&m.hg===m.ag){
+  if(m.pl==null||m.pv==null)out.push('Terminó empatado: faltan cargar los penales. Sin ellos la llave no tiene ganador y nadie avanza.');
+  else if(m.pl===m.pv)out.push('Los penales están empatados: revisá el resultado de la tanda.');
+ }
  return out;
+}
+/* Jugadores que figuran en ESTE partido estando suspendidos (se usa al finalizarlo:
+   compara contra las suspensiones vigentes, así que no sirve para partidos viejos). */
+function ineligibleIn(m){
+ return suspendedFor(m).filter(r=>(m.ev||[]).some(e=>e.p===r.p.id)).map(r=>`${r.p.name} figura en el partido pero estaba suspendido: posible alineación indebida.`);
 }
 /* Partidos con algo pendiente de cargar: quedaron "En juego" o finalizados con algo a revisar. */
 function pendingLoads(){
@@ -228,4 +238,26 @@ function teamMatches(id){
   ...db.cup.filter(m=>m.home===id||m.away===id).map(m=>({...m,cup:true}))]
   // descarta filas de copa duplicadas (misma llave y partido): queda la que tiene resultado
   .filter(m=>!m.cup||cupLeg(m.llave,m.leg)?.id===m.id);
+}
+
+/* Definiciones matemáticas: lo que ya no puede cambiar aunque queden partidos.
+   Criterio conservador: si un rival todavía puede IGUALAR en puntos, no se da por definido
+   (el desempate por goles aún podría cambiar el orden).
+   Solo se calcula si el fixture está completo (todos con la misma cantidad de partidos). */
+function clinches(dv){
+ const st=standings(dv),n=st.length,res={};
+ const total={},rem={};st.forEach(r=>{total[r.id]=0;rem[r.id]=0;res[r.id]=[]});
+ db.matches.filter(m=>m.div===dv).forEach(m=>[m.home,m.away].forEach(id=>{if(id in total){total[id]++;if(m.status!=='fin')rem[id]++}}));
+ const counts=new Set(Object.values(total));
+ if(n<4||counts.size!==1||![...counts][0])return res;   // fixture incompleto: no se afirma nada
+ const max=r=>r.pts+3*rem[r.id];
+ st.forEach(r=>{
+  const others=st.filter(o=>o.id!==r.id);
+  const canReach=others.filter(o=>max(o)>=r.pts).length; // rivales que todavía pueden alcanzarlo
+  const cantCatch=others.filter(o=>o.pts>max(r)).length; // rivales que ya no puede alcanzar
+  if(canReach===0)res[r.id].push('champ');
+  if(dv==='sl2'&&canReach<=2)res[r.id].push('promo');    // SuperLiga 2: top 3 asciende
+  if(cantCatch>=n-3)res[r.id].push('releg');             // queda entre los 3 últimos sí o sí
+ });
+ return res;
 }
