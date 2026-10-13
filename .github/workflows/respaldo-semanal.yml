@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: '17 8 * * 1'   # lunes ~05:17 hora de Chile
   workflow_dispatch: {}    # permite correrlo a mano desde la pestaña Actions
+  push:                    # y cuando cambia el código del respaldo, para probarlo al instante
+    branches: [main]
+    paths:
+      - '.github/workflows/respaldo-semanal.yml'
+      - 'scripts/backup.sh'
+      - 'scripts/RESTAURAR.md'
 
 permissions:
   contents: write
