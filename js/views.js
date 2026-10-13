@@ -171,14 +171,14 @@ const V={
    const row=r=>`<div class="discrow">
      <div class="discname"><a href="#/equipos?team=${r.p.team}">${esc(r.p.name)}</a><span class="mu">${tn(r.p.team)}</span>${(r.cerca&&!isCup)?'<span title="A una amarilla de la próxima suspensión">⚠️</span>':''}</div>
      <div class="dischist"><span class="mu">Histórico</span><span class="pill y">🟨${r.p.yc}</span><span class="pill r">🟥${r.p.rc}</span></div>
-     <div class="discsanc">${r.pend?`<span class="pill pend">⛔ ${r.pend} pendiente${r.pend>1?'s':''}</span>`:`<span class="pill ok">✓ Al día</span>`}${edit?`<span class="donec">(${r.done} cumplida${r.done!=1?'s':''}${r.pend?`<button class="pri" title="Marcar un partido cumplido" onclick="bumpDone('${r.p.id}',${isCup},1)">✓ Cumplió</button>`:''}${r.done>0?`<button title="Deshacer" onclick="bumpDone('${r.p.id}',${isCup},-1)">↺</button>`:''})</span>`:''}</div>
+     <div class="discsanc">${r.pend?`<span class="pill pend">⛔ ${r.pend} pendiente${r.pend>1?'s':''}</span>`:r.anul?`<span class="pill anul" title="Su equipo quedó eliminado de la copa: ya no hay partidos para cumplirla">${r.anul} anulada${r.anul>1?'s':''} · eliminado</span>`:`<span class="pill ok">✓ Al día</span>`}${edit?`<span class="donec">(${r.done} cumplida${r.done!=1?'s':''}${r.pend?`<button class="pri" title="Marcar un partido cumplido" onclick="bumpDone('${r.p.id}',${isCup},1)">✓ Cumplió</button>`:''}${r.done>0?`<button title="Deshacer" onclick="bumpDone('${r.p.id}',${isCup},-1)">↺</button>`:''})</span>`:''}</div>
     </div>`;
    const vacio=rows.length?'<div class="empty">Nadie en alerta por ahora.</div>':'<div class="empty">Sin tarjetas registradas.</div>';
    return`<div class="box"><h3>Historial${isCup?' · Copa THC':' · Liga'}</h3>${top.map(row).join('')||vacio}${rest.length?`<div id="${rid}" class="hide">${rest.map(row).join('')}</div><span class="vm" id="${rid}b" onclick="toggleList('${rid}')">Ver más</span>`:''}
    <div class="lg">${reglaTxt}${!isCup?' ⚠️ = a una amarilla de la próxima suspensión.':''}</div></div>`;};
   return alerta
    +tabla(ligaRows,false,'Liga: cada 3 amarillas acumuladas = 1 partido (3, 6, 9…). Cada roja = 1 partido directo y acumulativo (1, 2, 3…).')
-   +tabla(copaRows,true,'Copa THC: cada 2 amarillas acumuladas = 1 partido (2, 4, 6…). Cada roja = 1 partido directo y acumulativo (1, 2, 3…). Más estricta por tener menos partidos.')
+   +tabla(copaRows,true,'Copa THC: cada 2 amarillas acumuladas = 1 partido (2, 4, 6…). Cada roja = 1 partido directo y acumulativo (1, 2, 3…). Más estricta por tener menos partidos. Si el equipo queda eliminado, lo pendiente se anula porque ya no hay partidos para cumplirlo.')
    +`<div class="lg">"Generadas" se calcula solo, a partir de las tarjetas, y nunca se resetea. "Cumplidas" la marca el editor a mano cada vez que un jugador se baja esa suspensión en un partido real; "Pendientes" es la resta de ambas.</div>`;
  },
 

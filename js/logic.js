@@ -159,12 +159,25 @@ function applyRules(){
 /* Disciplina.
    Liga: cada 3 amarillas acumuladas = 1 partido; cada roja = 1 partido.
    Copa: cada 2 amarillas acumuladas = 1 partido; cada roja = 1 partido. */
+/* Equipos que ya no juegan la copa: perdieron una llave ya definida, o la copa terminó
+   (final definida: el campeón tampoco tiene más partidos). Se calcula siempre desde los
+   resultados, así que si se corrige un resultado, el equipo vuelve a estar en carrera. */
+function cupOutTeams(){
+ const out=new Set();
+ [...new Set(db.cup.map(c=>c.llave))].forEach(ll=>{const a=llaveAgg(ll);if(a?.decided)out.add(a.winner===a.A?a.B:a.A)});
+ const fin=llaveAgg('FINAL-01');if(fin?.decided)out.add(fin.winner);
+ return out;
+}
 function disciplineRows(list,isCup){
  const Ny=isCup?2:3;
+ const out=isCup?cupOutTeams():new Set();
  return list.filter(p=>p.yc>0||p.rc>0).map(p=>{
-  const genY=Math.floor(p.yc/Ny),genR=p.rc,gen=genY+genR,done=p.suspDone||0,pend=Math.max(0,gen-done);
-  const cerca=p.yc%Ny===Ny-1; // a 1 amarilla de la próxima suspensión
-  return{p,isCup,genY,genR,gen,done,pend,cerca};
+  const genY=Math.floor(p.yc/Ny),genR=p.rc,gen=genY+genR,done=p.suspDone||0;
+  let pend=Math.max(0,gen-done),anul=0;
+  // Copa: si su equipo ya no juega, lo pendiente no se puede cumplir → se anula (no se borra nada).
+  if(isCup&&pend>0&&out.has(p.team)){anul=pend;pend=0}
+  const cerca=!out.has(p.team)&&p.yc%Ny===Ny-1; // a 1 amarilla de la próxima suspensión
+  return{p,isCup,genY,genR,gen,done,pend,anul,cerca};
  });
 }
 

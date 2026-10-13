@@ -135,6 +135,7 @@ a:hover{text-decoration:underline}
 .pill.r{background:rgba(229,72,77,.12);color:var(--lv)}
 .pill.pend{background:rgba(229,72,77,.15);color:var(--lv)}
 .pill.ok{background:rgba(15,157,88,.12);color:var(--ac)}
+.pill.anul{background:var(--bg);color:var(--mu);border:1px dashed var(--ln);font-weight:600}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .pill.y{color:#e8c75a}:root:not([data-theme="light"]) .pill.r,:root:not([data-theme="light"]) .pill.pend{color:#ff8f93}}
 :root[data-theme="dark"] .pill.y{color:#e8c75a}
 :root[data-theme="dark"] .pill.r,:root[data-theme="dark"] .pill.pend{color:#ff8f93}
