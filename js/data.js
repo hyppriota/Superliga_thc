@@ -6,7 +6,14 @@
      nunca hay dos en vuelo a la vez, así uno viejo no pisa a uno nuevo. */
 const SB_URL='https://thdwohtkvhbynodrnewr.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRoZHdvaHRrdmhieW5vZHJuZXdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0Njk4NzQsImV4cCI6MjEwNjA0NTg3NH0.VgExV9nwcyuVFPfTRhydbnE92D-nwzvgeKXKHa1gnKk';
-const sb=window.supabase.createClient(SB_URL,SB_KEY);
+// Si la librería de Supabase no llegó a cargar (sin internet, red bloqueada), la app muestra
+// un aviso con "Reintentar" en vez de quedar en blanco.
+const SB_LIB_OK=!!(window.supabase&&window.supabase.createClient);
+const sb=SB_LIB_OK?window.supabase.createClient(SB_URL,SB_KEY):{
+ from(){throw new Error('No se pudo cargar la conexión con la base de datos. Revisá tu internet.')},
+ auth:{async getSession(){return{data:{session:null}}},onAuthStateChange(){return{data:{subscription:{unsubscribe(){}}}}},
+  async signInWithPassword(){return{error:{message:'Sin conexión con la base de datos.'}}},async signOut(){return{error:null}}}
+};
 
 // Temporada activa: se resuelve en Data.load() desde la fila is_current de "temporadas".
 let SEASON_ID=null;

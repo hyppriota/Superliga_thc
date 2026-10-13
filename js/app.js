@@ -194,7 +194,7 @@ async function boot(){
   db=await Data.load();
  }catch(e){
   console.error('Supabase load error',e);
-  app.innerHTML=`<div class="box bootErr"><h3>No se pudieron cargar los datos</h3><p>${esc(friendlyError(e))}</p><p class="mu">No se muestra información vieja para no confundir resultados. Probá de nuevo en un momento.</p><button class="btn pri" onclick="boot()">Reintentar</button></div>`;
+  app.innerHTML=`<div class="box bootErr"><h3>No se pudieron cargar los datos</h3><p>${esc(friendlyError(e))}</p><p class="mu">No se muestra información vieja para no confundir resultados. Probá de nuevo en un momento.</p><button class="btn pri" onclick="${SB_LIB_OK?'boot()':'location.reload()'}">Reintentar</button></div>`;
   return;
  }
  loaded=true;
