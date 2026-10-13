@@ -1,0 +1,42 @@
+name: Respaldo semanal
+
+on:
+  schedule:
+    - cron: '17 8 * * 1'   # lunes ~05:17 hora de Chile
+  workflow_dispatch: {}    # permite correrlo a mano desde la pestaña Actions
+
+permissions:
+  contents: write
+
+concurrency:
+  group: respaldo
+  cancel-in-progress: false
+
+jobs:
+  respaldo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Exportar datos y escudos de Supabase
+        run: bash scripts/backup.sh "$RUNNER_TEMP/out"
+
+      - name: Guardar en la rama "backups"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          mkdir "$RUNNER_TEMP/bk" && cd "$RUNNER_TEMP/bk"
+          git init -q
+          git config user.name "superliga-respaldo"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          if git fetch -q --depth 1 origin backups; then git checkout -q -b backups FETCH_HEAD; else git checkout -q --orphan backups; fi
+          cp -r "$RUNNER_TEMP/out/." .
+          cp "$GITHUB_WORKSPACE/scripts/RESTAURAR.md" README.md
+          git add -A
+          if git diff --cached --quiet; then echo "Sin cambios desde el último respaldo."; exit 0; fi
+          git commit -q -m "Respaldo $(cat ULTIMO.txt)"
+          git push -q origin backups
+          echo "Respaldo $(cat ULTIMO.txt) guardado en la rama backups."
