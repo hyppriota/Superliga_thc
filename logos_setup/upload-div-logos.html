@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>Subida de logos de división — SuperLiga THC</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<style>
+body{font-family:system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 16px;background:#0f1115;color:#eee}
+h1{font-size:20px}
+input{display:block;width:100%;box-sizing:border-box;margin:8px 0;padding:8px;border-radius:6px;border:1px solid #333;background:#1a1d24;color:#eee}
+button{background:#2f6fe4;color:#fff;border:0;border-radius:8px;padding:10px 18px;font-size:15px;cursor:pointer;margin-top:8px}
+button:disabled{opacity:.5;cursor:default}
+#log{margin-top:20px;font-family:monospace;font-size:13px;white-space:pre-wrap;background:#1a1d24;border-radius:8px;padding:12px;max-height:60vh;overflow:auto}
+.ok{color:#5ad17a}
+.err{color:#f06060}
+</style>
+</head>
+<body>
+<h1>Subida de logos de división</h1>
+<p>Esta página sube los 2 logos de división (SuperLiga THC / SuperLiga 2) al bucket <code>team-logos</code>. Como ahora la subida requiere estar logueado, iniciá sesión con tu usuario de editor del sitio.</p>
+<input id="email" type="email" placeholder="Email del editor">
+<input id="password" type="password" placeholder="Contraseña">
+<button id="go">Iniciar sesión y subir</button>
+<div id="log"></div>
+<script>
+const SB_URL='https://thdwohtkvhbynodrnewr.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRoZHdvaHRrdmhieW5vZHJuZXdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0Njk4NzQsImV4cCI6MjEwNjA0NTg3NH0.VgExV9nwcyuVFPfTRhydbnE92D-nwzvgeKXKHa1gnKk';
+const sb=window.supabase.createClient(SB_URL,SB_KEY);
+const FILES=['div-thc.webp','div-sl2.webp'];
+const logEl=document.getElementById('log');
+function line(msg,cls){const d=document.createElement('div');if(cls)d.className=cls;d.textContent=msg;logEl.appendChild(d);logEl.scrollTop=logEl.scrollHeight}
+document.getElementById('go').onclick=async()=>{
+ document.getElementById('go').disabled=true;
+ const email=document.getElementById('email').value.trim();
+ const password=document.getElementById('password').value;
+ const{error:authErr}=await sb.auth.signInWithPassword({email,password});
+ if(authErr){line(`ERROR login: ${authErr.message}`,'err');document.getElementById('go').disabled=false;return}
+ line('Login OK.','ok');
+ let ok=0,fail=0;
+ for(const name of FILES){
+  try{
+   const res=await fetch(name);
+   if(!res.ok)throw new Error('no se pudo leer el archivo local');
+   const blob=await res.blob();
+   const{error}=await sb.storage.from('team-logos').upload(name,blob,{upsert:true,contentType:'image/webp'});
+   if(error)throw error;
+   ok++;line(`OK  ${name}`,'ok');
+  }catch(e){
+   fail++;line(`ERROR ${name}: ${e.message||e}`,'err');
+  }
+ }
+ line(`\nListo. Subidos: ${ok} / ${FILES.length}. Errores: ${fail}.`,fail?'err':'ok');
+ document.getElementById('go').disabled=false;
+};
+</script>
+</body>
+</html>

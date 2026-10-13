@@ -188,13 +188,13 @@ const SB_URL='https://thdwohtkvhbynodrnewr.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRoZHdvaHRrdmhieW5vZHJuZXdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0Njk4NzQsImV4cCI6MjEwNjA0NTg3NH0.VgExV9nwcyuVFPfTRhydbnE92D-nwzvgeKXKHa1gnKk';
 const sb=window.supabase.createClient(SB_URL,SB_KEY);
 
-const SEASON_ID=1; // id de la fila "2026" en la tabla temporadas
+let SEASON_ID=1; // se resuelve en Data.load() contra la fila is_current de "temporadas"; 1 es solo el valor de arranque antes de cargar.
 const toDbMatch=m=>({id:m.id,div:m.div,round:m.round,home_id:m.home,away_id:m.away,hg:m.hg,ag:m.ag,status:m.status,time:m.time||null,ev:m.ev||[],season_id:m.season_id||SEASON_ID});
 const fromDbMatch=r=>({id:r.id,div:r.div,round:r.round,home:r.home_id,away:r.away_id,hg:r.hg,ag:r.ag,status:r.status,time:r.time,ev:r.ev||[],season_id:r.season_id});
 const toDbCup=c=>({id:c.id,fase:c.fase,llave:c.llave,leg:c.leg,home_id:c.home,away_id:c.away,hg:c.hg,ag:c.ag,pl:c.pl??null,pv:c.pv??null,status:c.status,ev:c.ev||[],season_id:c.season_id||SEASON_ID});
 const fromDbCup=r=>({id:r.id,fase:r.fase,llave:r.llave,leg:r.leg,home:r.home_id,away:r.away_id,hg:r.hg,ag:r.ag,pl:r.pl,pv:r.pv,status:r.status,ev:r.ev||[],season_id:r.season_id});
-const toDbPlayer=p=>({id:p.id,name:p.name,team_id:p.team,goals:p.goals,mvp:p.mvp,yc:p.yc,rc:p.rc,susp_done:p.suspDone||0,position:p.position||null,captain:!!p.captain});
-const fromDbPlayer=r=>({id:r.id,name:r.name,team:r.team_id,goals:r.goals,mvp:r.mvp,yc:r.yc,rc:r.rc,suspDone:r.susp_done||0,position:r.position||null,captain:!!r.captain});
+const toDbPlayer=p=>({id:p.id,name:p.name,team_id:p.team,goals:p.goals,mvp:p.mvp,yc:p.yc,rc:p.rc,susp_done:p.suspDone||0,position:p.position||null,captain:!!p.captain,season_id:p.seasonId||SEASON_ID});
+const fromDbPlayer=r=>({id:r.id,name:r.name,team:r.team_id,goals:r.goals,mvp:r.mvp,yc:r.yc,rc:r.rc,suspDone:r.susp_done||0,position:r.position||null,captain:!!r.captain,seasonId:r.season_id});
 function setCaptain(id){const p=db.players.find(x=>x.id===id);if(!p)return;const was=p.captain;db.players.filter(x=>x.team===p.team).forEach(x=>x.captain=false);p.captain=!was;save()}
 const POSC={POR:'#8b5e34',DEF:'#2f6fe4',MED:'#0f9d58',DEL:'#e5484d'},POSN={POR:'Arquero',DEF:'Defensa',MED:'Mediocampo',DEL:'Delantero'};
 const posDot=pos=>pos?`<span class="pdot" style="background:${POSC[pos]}" title="${POSN[pos]}"></span>`:'';
@@ -206,14 +206,16 @@ const KIND_TBL={teams:'teams',players:'players',matches:'matches',cup:'cup_match
 const Data={
  async load(){
   try{
-   const[t,p,m,cp,cm]=await Promise.all([
-    sb.from('teams').select('*'),sb.from('players').select('*'),
+   const[se,t,p,m,cp,cm]=await Promise.all([
+    sb.from('temporadas').select('*'),sb.from('teams').select('*'),sb.from('players').select('*'),
     sb.from('matches').select('*'),sb.from('cup_players').select('*'),
     sb.from('cup_matches').select('*')]);
-   const err=t.error||p.error||m.error||cp.error||cm.error;
+   const err=se.error||t.error||p.error||m.error||cp.error||cm.error;
    if(err)throw err;
    if(!t.data.length)return null;
-   return{teams:t.data,players:p.data.map(fromDbPlayer),matches:m.data.map(fromDbMatch),
+   const cur=se.data.find(s=>s.is_current)||se.data[0];
+   if(cur)SEASON_ID=cur.id;
+   return{temporadas:se.data,teams:t.data,players:p.data.map(fromDbPlayer),matches:m.data.map(fromDbMatch),
     cup:cm.data.map(fromDbCup),cupPlayers:cp.data.map(fromDbPlayer)};
   }catch(e){console.error('Supabase load error',e);return null}
  },
@@ -228,8 +230,11 @@ const Data={
    ]);
    const err=res.find(r=>r.error);
    if(err)throw err.error;
+   // Solo borra huérfanos de cup_players DENTRO de la temporada activa, para no tocar
+   // nunca filas de temporadas pasadas una vez que exista más de una.
    const ids=(d.cupPlayers||[]).map(p=>p.id);
-   const cl=ids.length?sb.from('cup_players').delete().not('id','in','('+ids.map(i=>'"'+i+'"').join(',')+')'):sb.from('cup_players').delete().neq('id','');
+   const base=sb.from('cup_players').delete().eq('season_id',SEASON_ID);
+   const cl=ids.length?base.not('id','in','('+ids.map(i=>'"'+i+'"').join(',')+')'):base;
    const r2=await cl;if(r2.error)throw r2.error;
   }catch(e){console.error('Supabase save error',e);alert('No se pudo guardar en la base en línea: '+(e.message||e))}
  },
