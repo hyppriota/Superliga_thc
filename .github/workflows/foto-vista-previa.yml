@@ -1,0 +1,38 @@
+name: Foto para la vista previa
+
+# Saca una foto de los datos actuales para armar la vista previa que se ve en Claude.
+# Se reemplaza cada vez (rama "snapshot", un solo commit), así no acumula historial.
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths: ['scripts/foto.txt']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: foto
+  cancel-in-progress: true
+
+jobs:
+  foto:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Exportar datos y escudos
+        run: |
+          bash scripts/backup.sh "$RUNNER_TEMP/out"
+          TZ=America/Santiago date '+%Y-%m-%d %H:%M' > "$RUNNER_TEMP/out/HORA.txt"
+      - name: Publicar en la rama snapshot
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/out"
+          git init -q -b snapshot
+          git config user.name "superliga-foto"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A && git commit -q -m "Foto $(cat HORA.txt) [skip netlify]"
+          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" snapshot

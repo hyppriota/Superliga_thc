@@ -22,7 +22,7 @@ function stateToHash(){
  return'#/'+S.view+(qs?'?'+qs:'');
 }
 function hashToState(){
- const[v,qs]=location.hash.replace(/^#\/?/,'').split('?');
+ const[v,qs]=curHash.replace(/^#\/?/,'').split('?');
  const p=new URLSearchParams(qs||'');
  S.view=VIEWS.includes(v)?v:'tablas';
  if(DIVS[p.get('div')])S.div=p.get('div');
@@ -35,18 +35,28 @@ function hashToState(){
  if(S.view==='buscar')S.q=p.get('q')||'';
  S.evOpen=null;
 }
-history.scrollRestoration='manual';
+/* La URL guarda la vista. Si el navegador no deja tocar el historial (por ejemplo,
+   dentro de una vista previa incrustada), se navega igual con una pila propia. */
+let curHash=location.hash;const ownStack=[];let historyOK=true;
+try{history.scrollRestoration='manual'}catch(e){historyOK=false}
 function navigate(hash,{replace=false,keepScroll=false}={}){
- const cur=history.state||{d:0};
- if(replace)history.replaceState({...cur,y:keepScroll?scrollY:0},'',hash);
- else{history.replaceState({...cur,y:scrollY},'');history.pushState({d:(cur.d||0)+1,y:0},'',hash)}
- hashToState();render();
+ const cur=(historyOK&&history.state)||{d:0};
+ try{
+  if(replace)history.replaceState({...cur,y:keepScroll?scrollY:0},'',hash);
+  else{history.replaceState({...cur,y:scrollY},'');history.pushState({d:(cur.d||0)+1,y:0},'',hash)}
+ }catch(e){historyOK=false}
+ if(!historyOK&&!replace)ownStack.push({hash:curHash,y:scrollY});
+ curHash=hash;hashToState();render();
  if(!keepScroll)scrollTo(0,0);
 }
 function go(v,extra,opts={}){if(extra)Object.assign(S,extra);S.view=v;navigate(stateToHash(),opts)}
-function goBack(){if((history.state?.d||0)>0)history.back();else go('equipos',{team:null},{replace:true})}
+function goBack(){
+ if(historyOK&&(history.state?.d||0)>0)return history.back();
+ const prev=ownStack.pop();
+ if(prev){curHash=prev.hash;hashToState();render();scrollTo(0,prev.y)}else go('equipos',{team:null},{replace:true});
+}
 function goH2H(a,b){go('h2h',{h2h:{a,b}})}
-addEventListener('popstate',e=>{if(!loaded)return;hashToState();render();scrollTo(0,e.state?.y||0)});
+addEventListener('popstate',e=>{if(!loaded)return;curHash=location.hash;hashToState();render();scrollTo(0,e.state?.y||0)});
 document.addEventListener('click',e=>{
  const a=e.target.closest('a[href^="#/"]');
  if(!a||e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;
@@ -199,8 +209,8 @@ async function boot(){
  }
  loaded=true;
  applyRules();
- if(!location.hash)history.replaceState({d:0,y:0},'','#/tablas');
- else history.replaceState({d:0,y:0},'');
+ if(!curHash)curHash='#/tablas';
+ try{history.replaceState({d:0,y:0},'',curHash)}catch(e){historyOK=false}
  hashToState();
  if(S.view==='buscar'&&S.q)document.getElementById('q').value=S.q;
  render();
