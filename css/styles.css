@@ -207,3 +207,10 @@ a:hover{text-decoration:underline}
 .susp-row{display:flex;flex-direction:column;gap:6px;padding:10px;border:1px solid var(--ln);border-radius:8px;background:var(--bg)}
 .susp-tags{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
 .btn.sm{padding:3px 9px;font-size:12px;margin-left:auto}
+/* Revisión al finalizar / pendientes */
+.rev-sec{display:flex;flex-direction:column;gap:6px;padding:10px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);margin-bottom:10px;font-size:13px}
+.rev-sec.warn{border-color:rgba(183,121,31,.5);background:rgba(216,169,46,.08)}
+.rev-check{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0;color:var(--tx);font-size:13px;cursor:pointer}
+.modal .rev-check input{display:inline-block;width:auto;margin:0}
+.rev-link{display:flex;flex-direction:column;gap:2px;padding:8px 10px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);font-size:12.5px}
+.rev-link:hover{border-color:var(--bl);text-decoration:none}

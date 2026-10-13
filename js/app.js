@@ -90,17 +90,41 @@ function render(){
 /* ---- Acciones del editor ----
    Cada cambio: se aplican las reglas automáticas (copa, estadísticas),
    se redibuja al instante y se guarda en segundo plano solo lo que cambió. */
-function commit(){applyRules();render();if(edit)Data.save(db)}
+let lastDecided={}; // llaves definidas en el último estado ya procesado
+function commit(){
+ applyRules();render();if(edit)Data.save(db);
+ announceCup(lastDecided);
+ lastDecided=decidedLlaves();
+}
+/* Avisos de copa: cuando un cambio define una llave, avisa quién pasa y a qué ronda. */
+function decidedLlaves(){const s={};[...new Set(db.cup.map(c=>c.llave))].forEach(ll=>{const a=llaveAgg(ll);if(a?.decided)s[ll]=a.winner});return s}
+function announceCup(before){
+ if(!edit)return;
+ const now=decidedLlaves();
+ Object.entries(now).forEach(([ll,w])=>{
+  if(before[ll]===w)return;
+  const fase=ll.split('-')[0],name=T(w)?.name||'?';
+  if(fase==='FINAL')toast(`🏆 ${name} es campeón de la Copa THC`,'ok',8000);
+  else{
+   const next=CUP_FASES[CUP_FASES.indexOf(fase)+1];if(!next)return;
+   const nl=`${next}-${String(Math.ceil(parseInt(ll.split('-')[1],10)/2)).padStart(2,'0')}`,ida=cupLeg(nl,1);
+   const created=ida&&(ida.home===w||ida.away===w);
+   toast(`${name} pasa a ${next==='FINAL'?'la final':next.toLowerCase()} · ${created?`el partido vs ${T(ida.home===w?ida.away:ida.home)?.name} ya quedó creado`:'espera rival'}`,'ok',6000);
+  }
+ });
+}
 const findM=id=>db.matches.find(x=>x.id===id)||db.cup.find(x=>x.id===id);
 
 function upd(id,k,v){
  const m=findM(id);if(!m)return;
  const kickoff=k==='status'&&v==='vivo'&&m.status!=='vivo';
- if(kickoff)setTimeout(()=>suspensionAlert(m),0); // al pasar a "En juego": avisa quién no puede jugar
+ const finish=k==='status'&&v==='fin'&&m.status!=='fin';
  if(k==='hg'||k==='ag')m[k]=v===''?0:Math.max(0,+v||0);
  else if(k==='pl'||k==='pv')m[k]=v===''?null:Math.max(0,+v||0);
  else m[k]=v===''?null:v;
  commit();
+ if(kickoff)setTimeout(()=>suspensionAlert(m),0); // al pasar a "En juego": avisa quién no puede jugar
+ if(finish)setTimeout(()=>finishReview(m),0);    // al finalizar: revisa la carga y las suspensiones cumplidas
 }
 async function del(kind,id){
  const list=db[kind];const item=list&&list.find(x=>x.id===id);if(!item)return;
@@ -125,16 +149,38 @@ function setTF(id,k,v){const t=T(id);if(!t)return;t[k]=v.trim()||null;commit()}
 function bumpDone(id,isCup,delta){const p=(isCup?db.cupPlayers:db.players).find(x=>x.id===id);if(!p)return;p.suspDone=Math.max(0,(p.suspDone||0)+delta);commit()}
 
 function toggleEv(id){S.evOpen=S.evOpen===id?null:id;render()}
+/* El marcador sigue a los goles cargados mientras estén "en sintonía": si el marcador
+   coincidía con los goles antes del cambio, se actualiza solo. Si lo escribiste a mano
+   distinto, no se toca (y el editor muestra el aviso de diferencia). */
+function syncScore(m,wasInSync){
+ if(!wasInSync)return;
+ const g=evGoals(m);
+ if(g.h!==m.hg||g.a!==m.ag){m.hg=g.h;m.ag=g.a;toast(`Marcador: ${T(m.home)?.name} ${m.hg}-${m.ag} ${T(m.away)?.name}`,'info',2500)}
+}
+const inSync=m=>{const g=evGoals(m);return g.h===m.hg&&g.a===m.ag};
 function addEv(id){
  const m=findM(id),t=document.getElementById('et').value;
  m.ev=m.ev||[];
- if(t==='OG'){m.ev.push({t:'OG',team:document.getElementById('eteam').value});commit();return}
+ const was=inSync(m);
+ if(t==='OG'){m.ev.push({t:'OG',team:document.getElementById('eteam').value});syncScore(m,was);commit();return}
  const p=document.getElementById('ep').value;
  if(!p)return toast('Elegí un jugador','error');
  if(t==='M')m.ev=m.ev.filter(e=>e.t!=='M'); // un solo MVP por partido
- m.ev.push({p,t});LASTP[id]=p;commit();
+ m.ev.push({p,t});LASTP[id]=p;
+ if(t==='G')syncScore(m,was);
+ commit();
+ // Tarjeta que genera una suspensión nueva en esta competición
+ if(t==='Y'||t==='R'){
+  const isCup=!!m.llave,c=cardsOf(p,isCup),prev={y:c.y-(t==='Y'),r:c.r-(t==='R')};
+  if(suspGen(c,isCup)>suspGen(prev,isCup))toast(`🚫 ${anyP(p)?.name} queda suspendido para el próximo partido de ${isCup?'copa':'liga'} (${t==='R'?'roja':`${c.y} amarillas`}).`,'error',7000);
+ }
 }
-function delEv(id,i){const m=findM(id);m.ev.splice(i,1);commit()}
+function delEv(id,i){
+ const m=findM(id),was=inSync(m),e=m.ev[i];
+ m.ev.splice(i,1);
+ if(e&&(e.t==='G'||e.t==='OG'))syncScore(m,was);
+ commit();
+}
 
 const val=id=>document.getElementById(id).value;
 function addTeam(){
@@ -172,7 +218,7 @@ function importBackup(el){
   let d;try{d=JSON.parse(r.result);if(!d.teams||!d.matches)throw 0}catch(e){return toast('El archivo no tiene el formato esperado (teams, players, matches, cup).','error',6000)}
   if(!await confirmDialog(`Esto reemplaza TODOS los datos en Supabase por los del archivo (${d.teams.length} equipos, ${(d.players||[]).length} jugadores, ${d.matches.length} partidos). ¿Seguir?`,'Reemplazar'))return;
   d.players=d.players||[];d.cup=d.cup||[];d.cupPlayers=d.cupPlayers||[];d.temporadas=db.temporadas;
-  db=d;applyRules();render();
+  db=d;applyRules();lastDecided=decidedLlaves();render();
   await Data.save(db,{allowMass:true});
   if(Data.status!=='error')toast('Datos importados','ok');
  };
@@ -185,6 +231,7 @@ async function toggleEdit(){
   if(!await loginDialog())return;
   edit=true;render();toast('Modo editor activado','ok');
   Data.save(db); // guarda lo que las reglas automáticas hayan completado
+  pendingReview();
  }else{
   if(Data.hasUnsaved()&&!await confirmDialog('Hay cambios que todavía no se guardaron. ¿Salir del modo editor igual?','Salir'))return;
   await sb.auth.signOut();edit=false;render();toast('Saliste del modo editor');
@@ -211,11 +258,12 @@ async function boot(){
  }
  loaded=true;
  applyRules();
+ lastDecided=decidedLlaves();
  if(!curHash)curHash='#/tablas';
  try{history.replaceState({d:0,y:0},'',curHash)}catch(e){historyOK=false}
  hashToState();
  if(S.view==='buscar'&&S.q)document.getElementById('q').value=S.q;
  render();
- if(edit)Data.save(db);
+ if(edit){Data.save(db);pendingReview()}
 }
 boot();

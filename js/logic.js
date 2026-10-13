@@ -181,6 +181,30 @@ function disciplineRows(list,isCup){
  });
 }
 
+/* Goles de cada equipo según los eventos cargados (goles + autogoles a favor). */
+function evGoals(m){
+ const g=t=>(m.ev||[]).filter(e=>(e.t==='G'&&anyP(e.p)?.team===t)||(e.t==='OG'&&e.team===t)).length;
+ return{h:g(m.home),a:g(m.away)};
+}
+/* Tarjetas de un jugador en una competición, y cuántas suspensiones generan. */
+function cardsOf(pid,isCup){
+ let y=0,r=0;(isCup?db.cup:db.matches).forEach(m=>(m.ev||[]).forEach(e=>{if(e.p===pid){if(e.t==='Y')y++;else if(e.t==='R')r++}}));
+ return{y,r};
+}
+const suspGen=(c,isCup)=>Math.floor(c.y/(isCup?2:3))+c.r;
+/* Cosas a revisar en un partido finalizado. */
+function matchIssues(m){
+ const out=[],g=evGoals(m),mv=(m.ev||[]).filter(e=>e.t==='M').length;
+ if(g.h!==m.hg||g.a!==m.ag)out.push(`Los goles cargados (${g.h}-${g.a}) no coinciden con el marcador (${m.hg}-${m.ag}).`);
+ if(!mv)out.push('Falta cargar el MVP.');else if(mv>1)out.push(`Hay ${mv} MVP cargados; debería haber uno solo.`);
+ return out;
+}
+/* Partidos con algo pendiente de cargar: quedaron "En juego" o finalizados con algo a revisar. */
+function pendingLoads(){
+ const all=[...db.matches.map(m=>({m,cup:false})),...db.cup.filter(m=>cupLeg(m.llave,m.leg)?.id===m.id).map(m=>({m,cup:true}))];
+ return all.map(({m,cup})=>({m,cup,issues:m.status==='vivo'?['Quedó marcado "En juego".']:m.status==='fin'?matchIssues(m):[]})).filter(x=>x.issues.length);
+}
+
 /* Suspendidos que no pueden jugar este partido: jugadores de los dos equipos con
    suspensión pendiente en ESA competencia (liga o copa, cada una con su regla).
    No cuenta las tarjetas recibidas en este mismo partido, que se cumplen en el siguiente. */

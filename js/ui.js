@@ -56,7 +56,8 @@ function evEditor(m){
    ?`<div class="rw" style="padding:4px 0"><span class="og">⚽ Autogol <span class="mu">(a favor de ${tn(e.team)})</span></span><a class="x" onclick="delEv('${m.id}',${i})">Quitar</a></div>`
    :`<div class="rw" style="padding:4px 0"><span>${ICON[e.t]} ${PN(e.p)} <span class="mu">${tn(anyP(e.p)?.team)}</span></span><a class="x" onclick="delEv('${m.id}',${i})">Quitar</a></div>`
   ).join('')||'<div class="mu">Sin eventos cargados.</div>';
- return `<div class="evp">${list}${warn}${warnM}<div class="f" style="padding:8px 0 0"><select id="et" onchange="toggleEvType()"><option value="G">⚽ Gol</option><option value="OG">⚽ Autogol</option><option value="Y">🟨 Amarilla</option><option value="R">🟥 Roja</option><option value="M">🏅 MVP</option></select><select id="ep"><optgroup label="${esc(T(m.home)?.name||'Local')}">${opt(m.home)}</optgroup><optgroup label="${esc(T(m.away)?.name||'Visita')}">${opt(m.away)}</optgroup></select><select id="eteam" style="display:none"><option value="${m.home}">A favor de ${tn(m.home)}</option><option value="${m.away}">A favor de ${tn(m.away)}</option></select><button class="pri" onclick="addEv('${m.id}')">Agregar</button></div></div>`;
+ const hint='<div class="mu" style="font-size:11.5px;padding-top:6px">El marcador se arma solo con los goles que cargues. Si lo escribís a mano distinto, se respeta tu número.</div>';
+ return `<div class="evp">${list}${warn}${warnM}${hint}<div class="f" style="padding:8px 0 0"><select id="et" onchange="toggleEvType()"><option value="G">⚽ Gol</option><option value="OG">⚽ Autogol</option><option value="Y">🟨 Amarilla</option><option value="R">🟥 Roja</option><option value="M">🏅 MVP</option></select><select id="ep"><optgroup label="${esc(T(m.home)?.name||'Local')}">${opt(m.home)}</optgroup><optgroup label="${esc(T(m.away)?.name||'Visita')}">${opt(m.away)}</optgroup></select><select id="eteam" style="display:none"><option value="${m.home}">A favor de ${tn(m.home)}</option><option value="${m.away}">A favor de ${tn(m.away)}</option></select><button class="pri" onclick="addEv('${m.id}')">Agregar</button></div></div>`;
 }
 function toggleEvType(){const og=document.getElementById('et').value==='OG';document.getElementById('ep').style.display=og?'none':'';document.getElementById('eteam').style.display=og?'':'none'}
 
@@ -111,9 +112,48 @@ function suspensionAlert(m){
  });
 }
 
+/* ---- Al finalizar un partido: revisión de la carga + suspensiones cumplidas ---- */
+const matchLabel=m=>`${m.llave?`Copa THC · ${esc(m.fase)}`:`Liga · Fecha ${m.round}`} · ${tn(m.home)} ${m.hg}-${m.ag} ${tn(m.away)}`;
+function finishReview(m){
+ const issues=matchIssues(m);
+ // Estaban suspendidos para este partido y no figuran en sus eventos: muy probablemente no jugaron.
+ const susp=suspendedFor(m).filter(r=>!(m.ev||[]).some(e=>e.p===r.p.id));
+ if(!issues.length&&!susp.length){toast(`Partido finalizado ✓ ${T(m.home)?.name} ${m.hg}-${m.ag} ${T(m.away)?.name}`,'ok');return}
+ openModal(`<h3 class="mtit">Partido finalizado</h3>
+  <p class="mu" style="margin:-6px 0 12px;font-size:12.5px">${matchLabel(m)}</p>
+  ${issues.length?`<div class="rev-sec warn"><b>⚠ Revisá la carga</b>${issues.map(i=>`<div>${esc(i)}</div>`).join('')}</div>`:''}
+  ${susp.length?`<div class="rev-sec"><b>¿Cumplieron su suspensión?</b><div class="mu" style="font-size:12px">Estaban suspendidos y no aparecen en este partido. Dejá marcados los que no jugaron:</div>
+   ${susp.map((r,i)=>`<label class="rev-check"><input type="checkbox" id="fs${i}" checked><span><b>${esc(r.p.name)}</b> <span class="mu">${tn(r.p.team)}</span></span>${suspMotivo(r)}</label>`).join('')}</div>`:''}
+  <div class="mact">${issues.length?'<button class="btn" id="fev">Abrir eventos</button>':''}${susp.length?'<button class="btn" id="fno">Ahora no</button><button class="btn pri" id="fok">Marcar cumplidas</button>':'<button class="btn pri" id="fok">Entendido</button>'}</div>`,root=>{
+  const fev=root.querySelector('#fev');if(fev)fev.onclick=()=>{closeModal();S.evOpen=m.id;render()};
+  const fno=root.querySelector('#fno');if(fno)fno.onclick=()=>closeModal();
+  root.querySelector('#fok').onclick=()=>{
+   let n=0;
+   susp.forEach((r,i)=>{if(!root.querySelector('#fs'+i)?.checked)return;const p=(r.isCup?db.cupPlayers:db.players).find(x=>x.id===r.p.id);if(p){p.suspDone=(p.suspDone||0)+1;n++}});
+   closeModal();
+   if(n){commit();toast(`${n} suspensión${n>1?'es':''} marcada${n>1?'s':''} como cumplida${n>1?'s':''}`,'ok')}
+  };
+ });
+}
+
+/* ---- Al entrar como editor: partidos con algo pendiente de cargar (una vez por sesión) ---- */
+function pendingReview(){
+ let shown=false;try{shown=sessionStorage.getItem('slthc-pend')==='1'}catch(e){}
+ if(shown)return;
+ const list=pendingLoads();if(!list.length)return;
+ try{sessionStorage.setItem('slthc-pend','1')}catch(e){}
+ const href=x=>x.cup?`#/copa?ver=bracket&llave=${encodeURIComponent(x.m.llave)}`:`#/fixture?div=${x.m.div}&round=${x.m.round}`;
+ const MAX=8;
+ openModal(`<h3 class="mtit">Pendientes de carga</h3>
+  <div class="susp-list">${list.slice(0,MAX).map(x=>`<a class="rev-link" href="${href(x)}" onclick="closeModal()"><span>${matchLabel(x.m)}</span><span class="mu">${x.issues.map(esc).join(' ')}</span></a>`).join('')}</div>
+  ${list.length>MAX?`<div class="mu" style="font-size:12px;margin-top:8px">y ${list.length-MAX} más.</div>`:''}
+  <div class="mact" style="margin-top:14px"><button class="btn pri" id="pok">Entendido</button></div>`,root=>{root.querySelector('#pok').onclick=()=>closeModal()});
+}
+
 /* ---- Avisos no bloqueantes ---- */
 function toast(msg,type='info',ms=3500){
  const root=document.getElementById('toasts');if(!root)return;
+ while(root.children.length>=3)root.firstElementChild.remove(); // máximo 3 avisos a la vez
  const el=document.createElement('div');el.className='toast '+type;el.setAttribute('role',type==='error'?'alert':'status');
  el.textContent=msg;root.appendChild(el);
  requestAnimationFrame(()=>el.classList.add('in'));
