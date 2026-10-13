@@ -1,0 +1,165 @@
+/* ===== LÓGICA DE LA LIGA (sin HTML) ===== */
+const DIVS={thc:'SuperLiga THC',sl2:'SuperLiga 2'};
+const STORAGE_PUBLIC=SB_URL+'/storage/v1/object/public/team-logos';
+const DLOGO={thc:STORAGE_PUBLIC+'/div-thc.webp',sl2:STORAGE_PUBLIC+'/div-sl2.webp'};
+const SEEDS=['Valle Alegre','Vxhoco'];
+const CUP_FASES=['16AVOS','OCTAVOS','CUARTOS','SEMIFINAL','FINAL'];
+const CUP_N={'16AVOS':16,OCTAVOS:8,CUARTOS:4,SEMIFINAL:2,FINAL:1};
+const FASE_ORD={'16AVOS':1,OCTAVOS:2,CUARTOS:3,SEMIFINAL:4,FINAL:5};
+const STATUS_ORD={fin:0,vivo:1,prox:2};
+const POSORD={DEL:0,MED:1,DEF:2,POR:3};
+const EV_KEY={G:'goals',M:'mvp',Y:'yc',R:'rc'};
+
+const T=id=>db.teams.find(t=>t.id===id);
+const uid=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+const anyP=id=>db.players.find(x=>x.id===id)||(db.cupPlayers||[]).find(x=>x.id===id);
+
+function standings(dv,upto){
+ const r={};db.teams.filter(t=>t.div===dv).forEach(t=>r[t.id]={id:t.id,pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0});
+ db.matches.filter(m=>m.div===dv&&m.status==='fin'&&(upto==null||m.round<=upto)&&r[m.home]&&r[m.away]).forEach(m=>{
+  const h=r[m.home],a=r[m.away];h.pj++;a.pj++;h.gf+=m.hg;h.gc+=m.ag;a.gf+=m.ag;a.gc+=m.hg;
+  if(m.hg>m.ag){h.g++;a.p++;h.pts+=3}else if(m.hg<m.ag){a.g++;h.p++;a.pts+=3}else{h.e++;a.e++;h.pts++;a.pts++}
+ });
+ const name=id=>T(id)?.name||'';
+ return Object.values(r).sort((a,b)=>b.pts-a.pts||(b.gf-b.gc)-(a.gf-a.gc)||b.gf-a.gf||name(a.id).localeCompare(name(b.id)));
+}
+function posMoves(dv){
+ const last=db.matches.filter(m=>m.div===dv&&m.status==='fin').reduce((a,m)=>Math.max(a,m.round),0);
+ const mv={};if(last<2)return mv;
+ standings(dv,last-1).forEach((r,i)=>mv[r.id]=i+1);return mv;
+}
+
+/* Estadísticas: se recalculan siempre desde los eventos de cada partido.
+   CUPMAP guarda las de copa por jugador; db.cupPlayers se reconstruye desde ahí
+   conservando las suspensiones ya cumplidas que marcó el editor. */
+let CUPMAP={};
+const tot=(p,k)=>(p[k]||0)+((CUPMAP[p.id]||{})[k]||0);
+function recompute(){
+ const prevDone={};(db.cupPlayers||[]).forEach(c=>{if(c.suspDone)prevDone[c.id]=c.suspDone});
+ const P={};db.players.forEach(p=>{p.goals=p.mvp=p.yc=p.rc=0;P[p.id]=p});
+ CUPMAP={};
+ db.matches.forEach(m=>(m.ev||[]).forEach(e=>{const p=P[e.p];if(p&&EV_KEY[e.t])p[EV_KEY[e.t]]++}));
+ db.cup.forEach(m=>(m.ev||[]).forEach(e=>{const p=P[e.p];if(!p||!EV_KEY[e.t])return;
+  const c=CUPMAP[p.id]||(CUPMAP[p.id]={id:p.id,name:p.name,team:p.team,goals:0,mvp:0,yc:0,rc:0});c[EV_KEY[e.t]]++}));
+ db.cupPlayers=Object.values(CUPMAP).map(c=>({...c,suspDone:prevDone[c.id]||0}));
+}
+/* Red de seguridad: si un evento de copa apunta a un jugador que no existe,
+   se crea un jugador visible en vez de que el evento desaparezca en silencio. */
+function ensureEventPlayers(){
+ let changed=false;
+ db.cup.forEach(m=>(m.ev||[]).forEach(e=>{
+  if(!e.p||e.t==='OG'||db.players.find(p=>p.id===e.p))return;
+  db.players.push({id:e.p,name:'Jugador sin identificar',team:m.home,goals:0,mvp:0,yc:0,rc:0});
+  changed=true;
+ }));
+ return changed;
+}
+
+/* Copa: si por algún motivo hay dos filas para la misma llave y partido,
+   se usa la que tiene resultado (fin > en juego > próximo). */
+function cupLeg(ll,leg){
+ return db.cup.filter(c=>c.llave===ll&&c.leg===leg).sort((a,b)=>STATUS_ORD[a.status]-STATUS_ORD[b.status])[0];
+}
+function cupLegs(ll){return[1,2,3].map(n=>cupLeg(ll,n)).filter(Boolean)}
+const goalsFor=(team,m)=>m.home===team?m.hg:(m.away===team?m.ag:null);
+
+/* Resultado de una llave: ida + vuelta (+ tercer partido si hubo empate global) */
+function llaveAgg(ll){
+ const ida=cupLeg(ll,1);if(!ida)return null;
+ const vta=cupLeg(ll,2),ter=cupLeg(ll,3),A=ida.home,B=ida.away;
+ let gA=null,gB=null;
+ if(ida.status==='fin'){gA=goalsFor(A,ida);gB=goalsFor(B,ida)}
+ if(vta&&vta.status==='fin'){gA=(gA||0)+goalsFor(A,vta);gB=(gB||0)+goalsFor(B,vta)}
+ const bothPlayed=ida.status==='fin'&&(!vta||vta.status==='fin');
+ let winner=null;
+ if(bothPlayed&&gA!=null){
+  if(gA>gB)winner=A;else if(gB>gA)winner=B;
+  else if(ter&&ter.status==='fin'){if(ter.hg>ter.ag)winner=ter.home;else if(ter.ag>ter.hg)winner=ter.away;else if(ter.pl!=null&&ter.pv!=null)winner=ter.pl>ter.pv?ter.home:ter.away}
+  else if(!vta&&ida.pl!=null&&ida.pv!=null)winner=ida.pl>ida.pv?A:B; // final a partido único, definición a penales
+ }
+ const sc=(leg,team)=>leg&&leg.status==='fin'?goalsFor(team,leg):null;
+ const legArr=[{a:sc(ida,A),b:sc(ida,B)}];
+ if(vta)legArr.push({a:sc(vta,A),b:sc(vta,B)});
+ if(ter)legArr.push({a:sc(ter,A),b:sc(ter,B)});
+ const pens=(ter&&ter.status==='fin'&&ter.pl!=null&&ter.pv!=null)?{a:ter.pl,b:ter.pv}:null;
+ return{ll,A,B,ida,vta,ter,gA,gB,winner,decided:!!winner,legs:legArr,pens};
+}
+
+/* Partidos que la app crea sola. El id es fijo por llave y partido (ej. "CUARTOS-01-L2"):
+   si dos editores lo generan a la vez, terminan apuntando a la misma fila en vez de duplicarla. */
+function autoCup(fase,llave,leg,home,away){
+ const id=`${llave}-L${leg}`;
+ Data.autoIds.add(id);
+ db.cup.push({id,fase,llave,leg,home,away,hg:0,ag:0,pl:null,pv:null,status:'prox',ev:[]});
+}
+/* Si una llave queda empatada en el global tras ida y vuelta, crea el tercer partido (definición a penales) */
+function ensureTercerPartido(){
+ let changed=false;
+ [...new Set(db.cup.map(c=>c.llave))].forEach(ll=>{
+  const ida=cupLeg(ll,1),vta=cupLeg(ll,2);
+  if(!ida||!vta||ida.status!=='fin'||vta.status!=='fin'||cupLeg(ll,3))return;
+  const gA=goalsFor(ida.home,ida)+goalsFor(ida.home,vta),gB=goalsFor(ida.away,ida)+goalsFor(ida.away,vta);
+  if(gA===gB){autoCup(ida.fase,ll,3,ida.home,ida.away);changed=true}
+ });
+ return changed;
+}
+/* Pasa a los ganadores de cada llave a la ronda siguiente, creando los partidos que falten */
+function advanceCup(){
+ let changed=false;
+ const pad=n=>String(n).padStart(2,'0');
+ for(let fi=0;fi<CUP_FASES.length-1;fi++){
+  const fase=CUP_FASES[fi],next=CUP_FASES[fi+1];
+  for(let k=1;k<=CUP_N[next];k++){
+   const wA=llaveAgg(`${fase}-${pad(2*k-1)}`)?.winner,wB=llaveAgg(`${fase}-${pad(2*k)}`)?.winner;
+   if(!wA||!wB)continue;
+   const llave=`${next}-${pad(k)}`;
+   const ida=cupLeg(llave,1);
+   if(!ida){autoCup(next,llave,1,wA,wB);changed=true}
+   else if(ida.status==='prox'&&(ida.home!==wA||ida.away!==wB)){ida.home=wA;ida.away=wB;changed=true}
+   if(next!=='FINAL'){
+    const vta=cupLeg(llave,2);
+    if(!vta){autoCup(next,llave,2,wB,wA);changed=true}
+    else if(vta.status==='prox'&&(vta.home!==wB||vta.away!==wA)){vta.home=wB;vta.away=wA;changed=true}
+   }
+  }
+ }
+ return changed;
+}
+/* Quita filas de copa duplicadas que estén vacías (próximo, 0-0, sin eventos)
+   cuando ya existe otra fila con resultado para la misma llave y partido.
+   Al guardar como editor, el borrado llega también a la base. */
+function dedupeCup(){
+ const keep=new Set(db.cup.map(c=>cupLeg(c.llave,c.leg)?.id));
+ const empty=c=>c.status==='prox'&&!c.hg&&!c.ag&&!(c.ev||[]).length;
+ const before=db.cup.length;
+ db.cup=db.cup.filter(c=>keep.has(c.id)||!empty(c));
+ return db.cup.length!==before;
+}
+/* Todo lo que se recalcula solo después de cada cambio. */
+function applyRules(){
+ const z=dedupeCup(),a=ensureEventPlayers(),b=ensureTercerPartido(),c=advanceCup();
+ recompute();
+ return z||a||b||c;
+}
+
+/* Disciplina.
+   Liga: cada 3 amarillas acumuladas = 1 partido; cada roja = 1 partido.
+   Copa: cada 2 amarillas acumuladas = 1 partido; cada roja = 1 partido. */
+function disciplineRows(list,isCup){
+ const Ny=isCup?2:3;
+ return list.filter(p=>p.yc>0||p.rc>0).map(p=>{
+  const genY=Math.floor(p.yc/Ny),genR=p.rc,gen=genY+genR,done=p.suspDone||0,pend=Math.max(0,gen-done);
+  const cerca=p.yc%Ny===Ny-1; // a 1 amarilla de la próxima suspensión
+  return{p,isCup,genY,genR,gen,done,pend,cerca};
+ });
+}
+
+/* Orden temporal aproximado para mezclar liga y copa (no hay fechas reales):
+   la copa se considera posterior a la liga, y dentro de la copa manda la fase y luego el partido. */
+const matchRank=m=>m.cup?9000+(FASE_ORD[m.fase]||0)*10+(m.leg||0):(m.round||0);
+function teamMatches(id){
+ return[...db.matches.filter(m=>m.home===id||m.away===id).map(m=>({...m,cup:false})),
+  ...db.cup.filter(m=>m.home===id||m.away===id).map(m=>({...m,cup:true}))]
+  // descarta filas de copa duplicadas (misma llave y partido): queda la que tiene resultado
+  .filter(m=>!m.cup||cupLeg(m.llave,m.leg)?.id===m.id);
+}
