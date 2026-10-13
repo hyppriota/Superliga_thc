@@ -261,3 +261,16 @@ function clinches(dv){
  });
  return res;
 }
+
+/* Suspendidos para la próxima fecha (público): liga = próxima fecha de la división;
+   copa = el próximo partido de cada equipo que sigue en carrera. Cada jugador una sola vez. */
+function nextSuspensions(dv){
+ const ms=db.matches.filter(m=>m.div===dv&&m.status!=='fin').sort((a,b)=>a.round-b.round);
+ const round=ms[0]?.round??null;
+ const liga=ms.filter(m=>m.round===round).flatMap(m=>suspendedFor(m).map(r=>({r,m})));
+ const seen=new Set();
+ const copa=db.cup.filter(m=>m.status!=='fin'&&m.home&&m.away&&cupLeg(m.llave,m.leg)?.id===m.id)
+  .sort((a,b)=>matchRank({...a,cup:true})-matchRank({...b,cup:true}))
+  .flatMap(m=>suspendedFor(m).filter(r=>!seen.has(r.p.id)&&seen.add(r.p.id)).map(r=>({r,m})));
+ return{round,liga,copa};
+}

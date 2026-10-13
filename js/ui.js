@@ -44,22 +44,32 @@ function evline(m){
  return `<div class="evr"><span>${h}</span><span class="r">${a}</span></div>`;
 }
 
-const LASTP={};
+/* Carga rápida de eventos: los dos planteles con un botón por tipo de evento.
+   Un toque = un evento. El suspendido aparece marcado (igual se puede cargar, con aviso). */
 function evEditor(m){
- const last=LASTP[m.id];
- const opt=t=>db.players.filter(p=>p.team===t).sort((a,b)=>a.name.localeCompare(b.name)).map(p=>`<option value="${p.id}" ${p.id===last?'selected':''}>${esc(p.name)}</option>`).join('');
- const gf=t=>(m.ev||[]).filter(e=>(e.t==='G'&&anyP(e.p)?.team===t)||(e.t==='OG'&&e.team===t)).length,gh=gf(m.home),ga=gf(m.away);
- const warn=(m.status==='fin'&&(gh!==m.hg||ga!==m.ag))?`<div class="wn">⚠ Goles cargados ${gh}-${ga} · Marcador ${m.hg}-${m.ag}</div>`:'';
- const mvps=(m.ev||[]).filter(e=>e.t==='M').length;
+ const ev=m.ev||[],susp=new Set(suspendedFor(m).map(r=>r.p.id));
+ const g=evGoals(m);
+ const warn=(m.status==='fin'&&(g.h!==m.hg||g.a!==m.ag))?`<div class="wn">⚠ Goles cargados ${g.h}-${g.a} · Marcador ${m.hg}-${m.ag}</div>`:'';
+ const mvps=ev.filter(e=>e.t==='M').length;
  const warnM=mvps>1?`<div class="wn">⚠ Este partido tiene ${mvps} MVP cargados; debería haber uno solo.</div>`:'';
- const list=(m.ev||[]).map((e,i)=>e.t==='OG'
+ const cnt=(pid,t)=>ev.filter(e=>e.p===pid&&e.t===t).length;
+ const badges=pid=>['G','Y','R','M'].map(t=>{const n=cnt(pid,t);return n?`<span class="qe-b">${ICON[t]}${n>1?n:''}</span>`:''}).join('');
+ const btn=(pid,t,lab)=>`<button class="qe-k" title="${lab}" aria-label="${lab}" onclick="addEv('${m.id}','${t}','${pid}')">${ICON[t]}</button>`;
+ const roster=team=>{
+  const pl=db.players.filter(p=>p.team===team).sort((a,b)=>(POSORD[a.position]??4)-(POSORD[b.position]??4)||a.name.localeCompare(b.name));
+  const rival=team===m.home?m.away:m.home;
+  return `<div class="qe-col"><div class="qe-h">${crest(team)}<b>${tn(team)}</b></div>
+   ${pl.map(p=>`<div class="qe-r${susp.has(p.id)?' susp':''}"><span class="qe-n">${posChip(p.position)}<span>${esc(p.name)}</span>${susp.has(p.id)?'<span class="qe-s" title="Suspendido para este partido">⛔</span>':''}${badges(p.id)}</span><span class="qe-ks">${btn(p.id,'G','Gol de '+esc(p.name))}${btn(p.id,'Y','Amarilla a '+esc(p.name))}${btn(p.id,'R','Roja a '+esc(p.name))}${btn(p.id,'M','MVP: '+esc(p.name))}</span></div>`).join('')||'<div class="mu">Sin jugadores cargados.</div>'}
+   <button class="qe-og" onclick="addEv('${m.id}','OG',null,'${rival}')">⚽ Autogol de ${tn(team)} <span class="mu">(suma para ${tn(rival)})</span></button></div>`;
+ };
+ const list=ev.map((e,i)=>e.t==='OG'
    ?`<div class="rw" style="padding:4px 0"><span class="og">⚽ Autogol <span class="mu">(a favor de ${tn(e.team)})</span></span><a class="x" onclick="delEv('${m.id}',${i})">Quitar</a></div>`
    :`<div class="rw" style="padding:4px 0"><span>${ICON[e.t]} ${PN(e.p)} <span class="mu">${tn(anyP(e.p)?.team)}</span></span><a class="x" onclick="delEv('${m.id}',${i})">Quitar</a></div>`
   ).join('')||'<div class="mu">Sin eventos cargados.</div>';
- const hint='<div class="mu" style="font-size:11.5px;padding-top:6px">El marcador se arma solo con los goles que cargues. Si lo escribís a mano distinto, se respeta tu número.</div>';
- return `<div class="evp">${list}${warn}${warnM}${hint}<div class="f" style="padding:8px 0 0"><select id="et" onchange="toggleEvType()"><option value="G">⚽ Gol</option><option value="OG">⚽ Autogol</option><option value="Y">🟨 Amarilla</option><option value="R">🟥 Roja</option><option value="M">🏅 MVP</option></select><select id="ep"><optgroup label="${esc(T(m.home)?.name||'Local')}">${opt(m.home)}</optgroup><optgroup label="${esc(T(m.away)?.name||'Visita')}">${opt(m.away)}</optgroup></select><select id="eteam" style="display:none"><option value="${m.home}">A favor de ${tn(m.home)}</option><option value="${m.away}">A favor de ${tn(m.away)}</option></select><button class="pri" onclick="addEv('${m.id}')">Agregar</button></div></div>`;
+ return `<div class="evp"><div class="qe-grid">${roster(m.home)}${roster(m.away)}</div>
+  <div class="mu" style="font-size:11.5px;padding:6px 0">Tocá ⚽ 🟨 🟥 🏅 al lado de cada jugador. El marcador se arma solo con los goles; si lo escribís a mano distinto, se respeta tu número. El MVP nuevo reemplaza al anterior.</div>
+  ${warn}${warnM}<div class="qe-list"><b style="font-size:12px">Cargado en este partido</b>${list}</div></div>`;
 }
-function toggleEvType(){const og=document.getElementById('et').value==='OG';document.getElementById('ep').style.display=og?'none':'';document.getElementById('eteam').style.display=og?'':'none'}
 
 function mrow(m){
  const st=m.status,lab=st==='fin'?'Final':st==='vivo'?'En juego':(m.time||'—');

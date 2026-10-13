@@ -25,7 +25,19 @@ const V={
   if(S.round==null||!rounds.includes(S.round)){const cur=ms.filter(m=>m.status!=='fin').sort((a,b)=>a.round-b.round)[0];S.round=cur?cur.round:rounds[rounds.length-1]}
   const list=ms.filter(m=>m.round===S.round);
   return seg()+`<div class="seg">${rounds.map(r=>`<button class="${r===S.round?'on':''}" onclick="go('fixture',{round:${r}})">Fecha ${r}</button>`).join('')}</div>`+
-   `<div class="box"><h3>${divHeader(S.div)}<span>Fecha ${S.round??'—'} de ${rounds.length}</span></h3>${list.map(mrow).join('')||'<div class="empty">Sin partidos en esta fecha.</div>'}</div>`;
+   `<div class="box"><h3>${divHeader(S.div)}<span>Fecha ${S.round??'—'} de ${rounds.length}</span></h3>${list.map(mrow).join('')||'<div class="empty">Sin partidos en esta fecha.</div>'}</div>`+V.nextSusp();
+ },
+
+ nextSusp(){
+  const{round,liga,copa}=nextSuspensions(S.div);
+  if(round==null&&!copa.length)return'';
+  const faseTxt=m=>m.fase.charAt(0)+m.fase.slice(1).toLowerCase()+(m.leg===1&&cupLeg(m.llave,2)?' (ida)':m.leg===2?' (vuelta)':m.leg===3?' (tercer partido)':'');
+  const row=({r,m},lab)=>`<div class="discrow"><div class="discname"><a href="#/equipos?team=${r.p.team}">${esc(r.p.name)}</a><span class="mu">${tn(r.p.team)} · ${esc(lab)} vs ${tn(r.p.team===m.home?m.away:m.home)}</span></div><div class="discsanc">${suspMotivo(r)}${suspPend(r)}</div></div>`;
+  const none='<div class="empty" style="padding:10px">Nadie suspendido.</div>';
+  return `<div class="box"><h3>🚫 No pueden jugar la próxima fecha<span>${DIVS[S.div]}</span></h3>
+   ${round!=null?`<div class="leg" style="padding-top:8px">Liga · Fecha ${round}</div>${liga.map(x=>row(x,'Fecha '+round)).join('')||none}`:''}
+   <div class="leg" style="padding-top:8px">Copa THC · próximo partido de cada equipo</div>${copa.map(x=>row(x,faseTxt(x.m))).join('')||none}
+   <div class="lg">Se actualiza solo con las tarjetas y las suspensiones cumplidas que marca el editor.</div></div>`;
  },
 
  copa(){

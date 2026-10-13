@@ -172,16 +172,15 @@ function syncScore(m,wasInSync){
  if(g.h!==m.hg||g.a!==m.ag){m.hg=g.h;m.ag=g.a;toast(`Marcador: ${T(m.home)?.name} ${m.hg}-${m.ag} ${T(m.away)?.name}`,'info',2500)}
 }
 const inSync=m=>{const g=evGoals(m);return g.h===m.hg&&g.a===m.ag};
-function addEv(id){
- const m=findM(id),t=document.getElementById('et').value;
+function addEv(id,t,p,team){
+ const m=findM(id);if(!m)return;
  m.ev=m.ev||[];
  const was=inSync(m);
- if(t==='OG'){m.ev.push({t:'OG',team:document.getElementById('eteam').value});syncScore(m,was);commit('Autogol agregado');return}
- const p=document.getElementById('ep').value;
+ if(t==='OG'){m.ev.push({t:'OG',team});syncScore(m,was);commit(`Autogol a favor de ${T(team)?.name} agregado`);return}
  if(!p)return toast('Elegí un jugador','error');
  const susp=suspendedFor(m).find(r=>r.p.id===p); // ¿estaba suspendido para este partido?
  if(t==='M')m.ev=m.ev.filter(e=>e.t!=='M'); // un solo MVP por partido
- m.ev.push({p,t});LASTP[id]=p;
+ m.ev.push({p,t});
  if(t==='G')syncScore(m,was);
  commit({G:'Gol',Y:'Amarilla',R:'Roja',M:'MVP'}[t]+` de ${anyP(p)?.name} `+(t==='Y'||t==='R'?'agregada':'agregado'));
  if(susp)toast(`⚠ ${susp.p.name} estaba suspendido para este partido (${[susp.genY?'amarillas':'',susp.genR?'roja':''].filter(Boolean).join(' y ')}). Revisá si hubo alineación indebida.`,'error',8000);
