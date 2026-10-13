@@ -48,11 +48,12 @@ const V={
   const col=items=>`<div style="position:relative;width:${BW}px;height:${H}px;flex:none">${items.map((it,k)=>{
    const top=centerY(k,items.length)-BH/2;
    if(it.real){const bA=it.winner===it.A,bB=it.winner===it.B;
-    // Ida y vuelta en chico; en grande el global, o el tercer partido si lo hubo (ese define la llave).
+    // Todos los partidos en chico (ida | vuelta | tercero); en grande el global,
+    // o el resultado del tercer partido si lo hubo (ese define la llave).
     const sc=(side,glob)=>{const legs=it.legs||[];const pen=it.pens?`<span class="bsc">(${it.pens[side]})p</span>`:'';
      if(legs.length<=1)return `<b>${legs[0]?.[side]??'–'}</b>${pen}`;
      const big=it.ter?legs[2]?.[side]:glob;
-     return `<span class="bsc">${legs.slice(0,2).map(l=>l[side]??'–').join(' | ')}</span><b${it.ter?' title="Tercer partido"':''}>${big??'–'}</b>${pen}`};
+     return `<span class="bsc">${legs.map(l=>l[side]??'–').join(' | ')}</span><b${it.ter?' title="Tercer partido"':''}>${big??'–'}</b>${pen}`};
     return `<div class="bmatch" style="top:${top}px" onclick="go('copa',{copaView:'bracket',bracketSel:'${esc(it.ll)}'})">
      <div class="brow ${bA?'bw':''}">${crest(it.A)}<span>${tn(it.A)}</span>${sc('a',it.gA)}</div>
      <div class="brow ${bB?'bw':''}">${crest(it.B)}<span>${tn(it.B)}</span>${sc('b',it.gB)}</div></div>`;
