@@ -144,7 +144,7 @@ a:hover{text-decoration:underline}
 .brow:last-child{border-bottom:0}
 .brow span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .brow.bw{font-weight:800}
-.brow .cr{width:16px;height:16px;font-size:7px;margin-right:3px}
+.brow .cr{width:16px;height:16px;font-size:7px;margin-right:3px;flex:none}
 .bl{flex:none;width:12px;height:12px;border-radius:3px;background:var(--bl);color:#fff;font-size:8px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;margin-right:3px}
 .bl.bv{background:var(--mu)}
 .mres{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-bottom:1px solid var(--ln);cursor:pointer}
@@ -200,3 +200,10 @@ a:hover{text-decoration:underline}
 .bootErr{padding:0 0 16px;text-align:center}
 .bootErr p{padding:0 16px}
 @media(prefers-reduced-motion:reduce){.spin{animation:none}.toast{transition:none}}
+/* Suspendidos en un partido */
+.susp-line{margin:0 12px 8px;padding:6px 10px;border-radius:6px;background:rgba(229,72,77,.1);color:var(--lv);font-size:12px;line-height:1.5}
+.susp-line b{color:var(--tx)}
+.susp-list{display:flex;flex-direction:column;gap:10px;max-height:55vh;overflow:auto}
+.susp-row{display:flex;flex-direction:column;gap:6px;padding:10px;border:1px solid var(--ln);border-radius:8px;background:var(--bg)}
+.susp-tags{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.btn.sm{padding:3px 9px;font-size:12px;margin-left:auto}

@@ -181,6 +181,21 @@ function disciplineRows(list,isCup){
  });
 }
 
+/* Suspendidos que no pueden jugar este partido: jugadores de los dos equipos con
+   suspensión pendiente en ESA competencia (liga o copa, cada una con su regla).
+   No cuenta las tarjetas recibidas en este mismo partido, que se cumplen en el siguiente. */
+function suspendedFor(m){
+ const isCup=!!m.llave,Ny=isCup?2:3;
+ const out=isCup?cupOutTeams():new Set();
+ const list=isCup?(db.cupPlayers||[]):db.players;
+ const here=(p,t)=>(m.ev||[]).filter(e=>e.p===p.id&&e.t===t).length;
+ return list.filter(p=>(p.team===m.home||p.team===m.away)&&!out.has(p.team)).map(p=>{
+  const yc=(p.yc||0)-here(p,'Y'),rc=(p.rc||0)-here(p,'R');
+  const genY=Math.floor(yc/Ny),genR=rc,pend=Math.max(0,genY+genR-(p.suspDone||0));
+  return{p,isCup,genY,genR,pend};
+ }).filter(r=>r.pend>0).sort((a,b)=>(a.p.team===m.home?0:1)-(b.p.team===m.home?0:1)||a.p.name.localeCompare(b.p.name));
+}
+
 /* Orden temporal aproximado para mezclar liga y copa (no hay fechas reales):
    la copa se considera posterior a la liga, y dentro de la copa manda la fase y luego el partido. */
 const matchRank=m=>m.cup?9000+(FASE_ORD[m.fase]||0)*10+(m.leg||0):(m.round||0);

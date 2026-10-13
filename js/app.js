@@ -95,6 +95,8 @@ const findM=id=>db.matches.find(x=>x.id===id)||db.cup.find(x=>x.id===id);
 
 function upd(id,k,v){
  const m=findM(id);if(!m)return;
+ const kickoff=k==='status'&&v==='vivo'&&m.status!=='vivo';
+ if(kickoff)setTimeout(()=>suspensionAlert(m),0); // al pasar a "En juego": avisa quién no puede jugar
  if(k==='hg'||k==='ag')m[k]=v===''?0:Math.max(0,+v||0);
  else if(k==='pl'||k==='pv')m[k]=v===''?null:Math.max(0,+v||0);
  else m[k]=v===''?null:v;

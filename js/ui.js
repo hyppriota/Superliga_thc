@@ -65,7 +65,7 @@ function mrow(m){
  let h=`<div class="m ${st}"><span class="st">${esc(lab)}</span><a class="r" href="#/equipos?team=${m.home}">${tn(m.home)}${crest(m.home)}</a><span class="sc" style="cursor:pointer" title="Historial entre estos equipos" onclick="goH2H('${m.home}','${m.away}')">${st==='prox'?'vs':m.hg+' - '+m.ag}</span><a href="#/equipos?team=${m.away}">${crest(m.away)}${tn(m.away)}</a></div><div class="ven">🏟 ${esc(T(m.home)?.stadium||'Estadio por confirmar')}</div>${evline(m)}`;
  if(edit){
   const opts=sel=>'<option value="">Por definir</option>'+db.teams.map(t=>`<option value="${t.id}" ${t.id===sel?'selected':''}>${esc(t.name)}</option>`).join('');
-  h+=`<div class="ed">
+  h+=(m.status==='vivo'?suspLine(m):'')+`<div class="ed">
   ${m.llave?`<select onchange="upd('${m.id}','home',this.value)">${opts(m.home)}</select><select onchange="upd('${m.id}','away',this.value)">${opts(m.away)}</select>`:''}
   <input type="number" min="0" inputmode="numeric" aria-label="Goles local" value="${m.hg}" onchange="upd('${m.id}','hg',this.value)"><input type="number" min="0" inputmode="numeric" aria-label="Goles visita" value="${m.ag}" onchange="upd('${m.id}','ag',this.value)">
   ${(m.llave&&(m.leg===3||m.fase==='FINAL'))?`<span class="mu" style="font-size:11px">Penales (si empató):</span><input type="number" min="0" placeholder="Local" style="width:52px" value="${m.pl??''}" onchange="upd('${m.id}','pl',this.value)"><input type="number" min="0" placeholder="Visita" style="width:52px" value="${m.pv??''}" onchange="upd('${m.id}','pv',this.value)">`:''}
@@ -87,6 +87,28 @@ function llaveBox(fase,ll){
   ${glob}
   ${ter?`<div class="leg">Tercer partido (definición a penales)</div>${mrow(ter)}${ter.status==='fin'&&ter.pl!=null?`<div class="gl">Penales: ${tn(A)} ${ter.pl} - ${ter.pv} ${tn(B)}</div>`:''}`:''}
  </div>`;
+}
+
+/* ---- Suspendidos de un partido (modo editor) ---- */
+const suspMotivo=r=>[r.genY?`<span class="pill y">🟨 amarillas</span>`:'',r.genR?`<span class="pill r">🟥 roja${r.genR>1?'s':''}</span>`:''].join('');
+const suspPend=r=>`<span class="pill pend">⛔ ${r.pend} partido${r.pend>1?'s':''}</span>`;
+function suspLine(m){
+ const rows=suspendedFor(m);if(!rows.length)return'';
+ return `<div class="susp-line" role="note">⛔ No pueden jugar: ${rows.map(r=>`<b>${esc(r.p.name)}</b> <span class="mu">(${tn(r.p.team)})</span>`).join(', ')}</div>`;
+}
+function suspensionAlert(m){
+ const rows=suspendedFor(m);if(!rows.length)return;
+ const comp=m.llave?`Copa THC · ${esc(m.fase)}`:`Liga · Fecha ${m.round}`;
+ openModal(`<h3 class="mtit">⛔ Suspendidos en este partido</h3>
+  <p class="mu" style="margin:-6px 0 12px;font-size:12.5px">${comp} · ${tn(m.home)} vs ${tn(m.away)}</p>
+  <div class="susp-list">${rows.map((r,i)=>`<div class="susp-row">
+   <div><b>${esc(r.p.name)}</b> <span class="mu">${tn(r.p.team)}</span></div>
+   <div class="susp-tags">${suspMotivo(r)}${suspPend(r)}<button class="btn sm" id="sd${i}" title="Se baja de este partido: descuenta una fecha de su suspensión">Marcar cumplida</button></div>
+  </div>`).join('')}</div>
+  <div class="mact" style="margin-top:14px"><button class="btn pri" id="sok">Entendido</button></div>`,root=>{
+  root.querySelector('#sok').onclick=()=>closeModal();
+  rows.forEach((r,i)=>{const b=root.querySelector('#sd'+i);b.onclick=()=>{bumpDone(r.p.id,r.isCup,1);b.disabled=true;b.textContent='✓ Cumplida'}});
+ });
 }
 
 /* ---- Avisos no bloqueantes ---- */
