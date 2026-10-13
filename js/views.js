@@ -1,4 +1,6 @@
 /* ===== VISTAS (una función por pestaña; devuelven HTML) ===== */
+// Los rankings muestran los primeros y, con "Ver más", hasta este puesto.
+const TOP_MAX=15;
 const V={
  tablas(){
   const ms=db.matches.filter(m=>m.div===S.div);
@@ -119,8 +121,8 @@ const V={
   const stTable=(()=>{const n=st.length,i=st.findIndex(r=>r.id===t.id);
    let lo=Math.max(0,i-2),hi=Math.min(n,lo+5);lo=Math.max(0,hi-5);
    return `<table><tr><th>#</th><th style="text-align:left">Equipo</th><th>PTS</th><th>PJ</th></tr>${st.slice(lo,hi).map((r,k)=>`<tr${r.id===t.id?' style="font-weight:800;background:var(--bg)"':''}><td>${lo+k+1}</td><td class="n">${crest(r.id)}${tn(r.id)}</td><td><span class="ptsb">${r.pts}</span></td><td>${r.pj}</td></tr>`).join('')}</table>`})();
-  const t3=(key,label,icon)=>{const ranked=pl.slice().sort((a,b)=>tot(b,key)-tot(a,key)).filter(p=>tot(p,key)>0);
-   const g=ranked.slice(0,3),rest=ranked.slice(3),rid='t3-'+key+t.id,row=(p,i)=>`<div class="t3r">${i<3?`<span class="t3n m${i+1}">${i+1}</span>`:'<span class="t3n" style="background:none"></span>'}<span>${esc(p.name)}</span><b>${tot(p,key)}</b></div>`;
+  const t3=(key,label,icon)=>{const ranked=rankPlayers(pl,p=>tot(p,key),key,'tot');
+   const g=ranked.slice(0,3),rest=ranked.slice(3,TOP_MAX),rid='t3-'+key+t.id,row=(p,i)=>`<div class="t3r">${i<3?`<span class="t3n m${i+1}">${i+1}</span>`:'<span class="t3n" style="background:none"></span>'}<span>${esc(p.name)}</span><b>${tot(p,key)}</b></div>`;
    return `<div class="t3c"><h3 style="border:0;padding:0 0 6px">${icon} ${label}</h3>${g.map(row).join('')||'<div class="mu" style="font-size:12px">Sin datos.</div>'}${rest.length?`<div id="${rid}" class="hide">${rest.map((p,i)=>row(p,i+3)).join('')}</div><span class="vm" id="${rid}b" style="text-align:left;padding:4px 0" onclick="toggleList('${rid}')">Ver más</span>`:''}</div>`};
   const nm=next[0],lm=last[0];
   const playerRow=p=>`<div class="rw"><span>${edit?`<select class="posel" aria-label="Posición" onchange="setPos('${p.id}',this.value)">${['','POR','DEF','MED','DEL'].map(v=>`<option value="${v}" ${p.position===v||(!p.position&&!v)?'selected':''}>${v||'—'}</option>`).join('')}</select>`:posChip(p.position)}${esc(p.name)}${p.captain?' <span class="cbadge" title="Capitán">C</span>':''}${edit?` <button class="cbtn ${p.captain?'on':''}" title="Marcar como capitán" onclick="setCaptain('${p.id}')">C</button> <a class="x" onclick="del('players','${p.id}')">✕</a>`:''}</span>${pills(p)}</div>`;
@@ -142,19 +144,19 @@ const V={
  jugadores(){
   const byDiv=dv=>db.players.filter(p=>T(p.team)?.div===dv);
   const rid=s=>'rk-'+s.replace(/[^a-z0-9]/gi,'')+'-'+S.div;
-  const rank=(list,key,label,icon)=>{const g=list.slice().sort((a,b)=>b[key]-a[key]).filter(p=>p[key]>0);
-   const top=g.slice(0,6),rest=g.slice(6),id=rid(label+key);
+  const rank=(list,key,label,icon,scope)=>{const g=rankPlayers(list,p=>p[key],key,scope);
+   const top=g.slice(0,6),rest=g.slice(6,TOP_MAX),id=rid(label+key);
    const row=(p,i)=>`<div class="rw"><span>${i+1}. <a href="#/equipos?team=${p.team}">${esc(p.name)}</a> <span class="mu">${tn(p.team)}</span></span><b>${p[key]}</b></div>`;
    return `<div class="box"><h3>${icon} ${label}</h3>${top.map(row).join('')||'<div class="empty">Sin datos registrados.</div>'}${rest.length?`<div id="${id}" class="hide">${rest.map((p,i)=>row(p,i+6)).join('')}</div><span class="vm" id="${id}b" onclick="toggleList('${id}')">Ver más</span>`:''}</div>`};
   const teamCards=(dv,key,label)=>{const rows=db.teams.filter(t=>t.div===dv).map(t=>({t,n:db.players.filter(p=>p.team===t.id).reduce((s,p)=>s+p[key],0)})).sort((a,b)=>b.n-a.n).filter(r=>r.n>0);
-   const top=rows.slice(0,6),rest=rows.slice(6),id=rid(label+key+dv);
+   const top=rows.slice(0,6),rest=rows.slice(6,TOP_MAX),id=rid(label+key+dv);
    const row=(r,i)=>`<div class="rw"><span>${i+1}. <a href="#/equipos?team=${r.t.id}">${crest(r.t.id)}${esc(r.t.name)}</a></span><b>${r.n}</b></div>`;
    return `<div class="box"><h3>${label} · ${DIVS[dv]}</h3>${top.map(row).join('')||'<div class="empty">Sin datos.</div>'}${rest.length?`<div id="${id}" class="hide">${rest.map((r,i)=>row(r,i+6)).join('')}</div><span class="vm" id="${id}b" onclick="toggleList('${id}')">Ver más</span>`:''}</div>`};
   const cup=db.cupPlayers||[],cl=`<img class="tl" alt="" src="${DLOGO.thc}">`;
   const L=byDiv(S.div);
-  return seg()+rank(L,'goals','Goleadores','⚽')+rank(L,'mvp','Ranking MVP','🏅')+rank(L,'yc','Más amarillas','🟨')+rank(L,'rc','Más rojas','🟥')
+  return seg()+rank(L,'goals','Goleadores','⚽','liga')+rank(L,'mvp','Ranking MVP','🏅','liga')+rank(L,'yc','Más amarillas','🟨','liga')+rank(L,'rc','Más rojas','🟥','liga')
    +teamCards(S.div,'yc','Equipos con más amarillas')+teamCards(S.div,'rc','Equipos con más rojas')
-   +rank(cup,'goals',cl+'Goleadores · Copa THC','⚽')+rank(cup,'mvp',cl+'Ranking MVP · Copa THC','🏅')+rank(cup,'yc',cl+'Más amarillas · Copa THC','🟨')+rank(cup,'rc',cl+'Más rojas · Copa THC','🟥');
+   +rank(cup,'goals',cl+'Goleadores · Copa THC','⚽','copa')+rank(cup,'mvp',cl+'Ranking MVP · Copa THC','🏅','copa')+rank(cup,'yc',cl+'Más amarillas · Copa THC','🟨','copa')+rank(cup,'rc',cl+'Más rojas · Copa THC','🟥','copa');
  },
 
  disciplina(){

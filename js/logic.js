@@ -34,13 +34,27 @@ function posMoves(dv){
    conservando las suspensiones ya cumplidas que marcó el editor. */
 let CUPMAP={};
 const tot=(p,k)=>(p[k]||0)+((CUPMAP[p.id]||{})[k]||0);
+/* RECENT guarda, por jugador y estadística, qué tan reciente fue su último evento
+   (fecha/fase del partido y orden dentro del partido). Sirve para desempatar rankings:
+   con la misma cifra, va primero quien la sumó más recientemente. */
+let RECENT={liga:{},copa:{}};
+function lastOf(p,k,scope){
+ const l=RECENT.liga[p.id]?.[k]??-1,c=RECENT.copa[p.id]?.[k]??-1;
+ return scope==='liga'?l:scope==='copa'?c:Math.max(l,c);
+}
+function rankPlayers(list,valueOf,key,scope){
+ return list.filter(p=>valueOf(p)>0).sort((a,b)=>valueOf(b)-valueOf(a)||lastOf(b,key,scope)-lastOf(a,key,scope)||a.name.localeCompare(b.name));
+}
 function recompute(){
  const prevDone={};(db.cupPlayers||[]).forEach(c=>{if(c.suspDone)prevDone[c.id]=c.suspDone});
  const P={};db.players.forEach(p=>{p.goals=p.mvp=p.yc=p.rc=0;P[p.id]=p});
- CUPMAP={};
- db.matches.forEach(m=>(m.ev||[]).forEach(e=>{const p=P[e.p];if(p&&EV_KEY[e.t])p[EV_KEY[e.t]]++}));
- db.cup.forEach(m=>(m.ev||[]).forEach(e=>{const p=P[e.p];if(!p||!EV_KEY[e.t])return;
-  const c=CUPMAP[p.id]||(CUPMAP[p.id]={id:p.id,name:p.name,team:p.team,goals:0,mvp:0,yc:0,rc:0});c[EV_KEY[e.t]]++}));
+ CUPMAP={};RECENT={liga:{},copa:{}};
+ const mark=(scope,id,k,v)=>{const r=RECENT[scope][id]||(RECENT[scope][id]={});if(!(r[k]>=v))r[k]=v};
+ db.matches.forEach(m=>(m.ev||[]).forEach((e,i)=>{const p=P[e.p],k=EV_KEY[e.t];if(!p||!k)return;
+  p[k]++;mark('liga',p.id,k,matchRank(m)*1000+i)}));
+ db.cup.forEach(m=>(m.ev||[]).forEach((e,i)=>{const p=P[e.p],k=EV_KEY[e.t];if(!p||!k)return;
+  const c=CUPMAP[p.id]||(CUPMAP[p.id]={id:p.id,name:p.name,team:p.team,goals:0,mvp:0,yc:0,rc:0});c[k]++;
+  mark('copa',p.id,k,matchRank({...m,cup:true})*1000+i)}));
  db.cupPlayers=Object.values(CUPMAP).map(c=>({...c,suspDone:prevDone[c.id]||0}));
 }
 /* Red de seguridad: si un evento de copa apunta a un jugador que no existe,
