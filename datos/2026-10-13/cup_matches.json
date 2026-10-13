@@ -1,0 +1,1905 @@
+[
+  {
+    "id": "c10l1",
+    "fase": "16AVOS",
+    "llave": "16AVOS-10",
+    "leg": 1,
+    "home_id": "sl29",
+    "away_id": "sl24",
+    "hg": 0,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "sl2p103",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c10l2",
+    "fase": "16AVOS",
+    "llave": "16AVOS-10",
+    "leg": 2,
+    "home_id": "sl24",
+    "away_id": "sl29",
+    "hg": 0,
+    "ag": 2,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "sl2p158",
+        "t": "G"
+      },
+      {
+        "p": "sl2p145",
+        "t": "G"
+      },
+      {
+        "p": "sl2p158",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c11l1",
+    "fase": "16AVOS",
+    "llave": "16AVOS-11",
+    "leg": 1,
+    "home_id": "thc4",
+    "away_id": "sl216",
+    "hg": 0,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "sl2p77",
+        "t": "Y"
+      },
+      {
+        "p": "pmusez206z2s",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c11l2",
+    "fase": "16AVOS",
+    "llave": "16AVOS-11",
+    "leg": 2,
+    "home_id": "sl216",
+    "away_id": "thc4",
+    "hg": 1,
+    "ag": 4,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp57",
+        "t": "G"
+      },
+      {
+        "p": "sl2p77",
+        "t": "G"
+      },
+      {
+        "p": "thcp104",
+        "t": "G"
+      },
+      {
+        "p": "thcp104",
+        "t": "G"
+      },
+      {
+        "p": "thcp104",
+        "t": "M"
+      },
+      {
+        "t": "OG",
+        "team": "thc4"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c12l1",
+    "fase": "16AVOS",
+    "llave": "16AVOS-12",
+    "leg": 1,
+    "home_id": "sl26",
+    "away_id": "sl28",
+    "hg": 3,
+    "ag": 1,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "sl2p65",
+        "t": "G"
+      },
+      {
+        "p": "sl2p71",
+        "t": "G"
+      },
+      {
+        "p": "sl2p65",
+        "t": "G"
+      },
+      {
+        "p": "sl2p131",
+        "t": "G"
+      },
+      {
+        "p": "pmusfj0jcvg9",
+        "t": "Y"
+      },
+      {
+        "p": "sl2p65",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c12l2",
+    "fase": "16AVOS",
+    "llave": "16AVOS-12",
+    "leg": 2,
+    "home_id": "sl28",
+    "away_id": "sl26",
+    "hg": 1,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "sl2p129",
+        "t": "Y"
+      },
+      {
+        "p": "pmusnlx4pvmq",
+        "t": "Y"
+      },
+      {
+        "p": "sl2p6",
+        "t": "Y"
+      },
+      {
+        "p": "sl2p63",
+        "t": "G"
+      },
+      {
+        "p": "sl2p63",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c13l1",
+    "fase": "16AVOS",
+    "llave": "16AVOS-13",
+    "leg": 1,
+    "home_id": "thc3",
+    "away_id": "thc16",
+    "hg": 1,
+    "ag": 2,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp76",
+        "t": "G"
+      },
+      {
+        "p": "thcp1",
+        "t": "G"
+      },
+      {
+        "p": "thcp9",
+        "t": "G"
+      },
+      {
+        "p": "thcp1",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c13l2",
+    "fase": "16AVOS",
+    "llave": "16AVOS-13",
+    "leg": 2,
+    "home_id": "thc16",
+    "away_id": "thc3",
+    "hg": 1,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "pmuujch0xsf7",
+        "t": "G"
+      },
+      {
+        "p": "pmuujch0xsf7",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c14l1",
+    "fase": "16AVOS",
+    "llave": "16AVOS-14",
+    "leg": 1,
+    "home_id": "thc15",
+    "away_id": "sl211",
+    "hg": 2,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp26",
+        "t": "G"
+      },
+      {
+        "p": "thcp26",
+        "t": "G"
+      },
+      {
+        "p": "thcp26",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c14l2",
+    "fase": "16AVOS",
+    "llave": "16AVOS-14",
+    "leg": 2,
+    "home_id": "sl211",
+    "away_id": "thc15",
+    "hg": 1,
+    "ag": 1,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "sl2p11",
+        "t": "G"
+      },
+      {
+        "p": "thcp26",
+        "t": "G"
+      },
+      {
+        "p": "sl2p114",
+        "t": "Y"
+      },
+      {
+        "p": "thcp26",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c15l1",
+    "fase": "16AVOS",
+    "llave": "16AVOS-15",
+    "leg": 1,
+    "home_id": "thc13",
+    "away_id": "sl27",
+    "hg": 0,
+    "ag": 1,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "pmusgtimsweb",
+        "t": "G"
+      },
+      {
+        "p": "pmusgu8t4wb8",
+        "t": "Y"
+      },
+      {
+        "p": "pmusgtimsweb",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c15l2",
+    "fase": "16AVOS",
+    "llave": "16AVOS-15",
+    "leg": 2,
+    "home_id": "sl27",
+    "away_id": "thc13",
+    "hg": 3,
+    "ag": 1,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "sl2p8",
+        "t": "G"
+      },
+      {
+        "p": "sl2p8",
+        "t": "G"
+      },
+      {
+        "p": "pmuukam1agdm",
+        "t": "G"
+      },
+      {
+        "p": "sl2p153",
+        "t": "G"
+      },
+      {
+        "p": "sl2p8",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c16l1",
+    "fase": "16AVOS",
+    "llave": "16AVOS-16",
+    "leg": 1,
+    "home_id": "thc8",
+    "away_id": "sl21",
+    "hg": 0,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "sl2p135",
+        "t": "Y"
+      },
+      {
+        "p": "thcp55",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c16l2",
+    "fase": "16AVOS",
+    "llave": "16AVOS-16",
+    "leg": 2,
+    "home_id": "sl21",
+    "away_id": "thc8",
+    "hg": 3,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "sl2p135",
+        "t": "G"
+      },
+      {
+        "p": "sl2p135",
+        "t": "G"
+      },
+      {
+        "p": "pmuul0ao25wy",
+        "t": "Y"
+      },
+      {
+        "p": "sl2p135",
+        "t": "G"
+      },
+      {
+        "p": "sl2p135",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c1l1",
+    "fase": "16AVOS",
+    "llave": "16AVOS-01",
+    "leg": 1,
+    "home_id": "thc11",
+    "away_id": "sl213",
+    "hg": 0,
+    "ag": 1,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "sl2p68",
+        "t": "G"
+      },
+      {
+        "p": "pmusiug7fnjl",
+        "t": "Y"
+      },
+      {
+        "p": "sl2p68",
+        "t": "Y"
+      },
+      {
+        "p": "sl2p68",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c1l2",
+    "fase": "16AVOS",
+    "llave": "16AVOS-01",
+    "leg": 2,
+    "home_id": "sl213",
+    "away_id": "thc11",
+    "hg": 1,
+    "ag": 3,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp51",
+        "t": "G"
+      },
+      {
+        "p": "thcp15",
+        "t": "G"
+      },
+      {
+        "p": "pmushuqv6kor",
+        "t": "Y"
+      },
+      {
+        "p": "thcp15",
+        "t": "G"
+      },
+      {
+        "p": "sl2p15",
+        "t": "G"
+      },
+      {
+        "p": "thcp15",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c2l1",
+    "fase": "16AVOS",
+    "llave": "16AVOS-02",
+    "leg": 1,
+    "home_id": "sl210",
+    "away_id": "sl23",
+    "hg": 1,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "sl2p80",
+        "t": "G"
+      },
+      {
+        "p": "sl2p90",
+        "t": "Y"
+      },
+      {
+        "p": "pmusixxvhx4i",
+        "t": "Y"
+      },
+      {
+        "p": "sl2p80",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c2l2",
+    "fase": "16AVOS",
+    "llave": "16AVOS-02",
+    "leg": 2,
+    "home_id": "sl23",
+    "away_id": "sl210",
+    "hg": 4,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "sl2p45",
+        "t": "G"
+      },
+      {
+        "p": "sl2p25",
+        "t": "G"
+      },
+      {
+        "p": "sl2p45",
+        "t": "G"
+      },
+      {
+        "p": "sl2p25",
+        "t": "G"
+      },
+      {
+        "p": "sl2p25",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c3l1",
+    "fase": "16AVOS",
+    "llave": "16AVOS-03",
+    "leg": 1,
+    "home_id": "sl214",
+    "away_id": "thc6",
+    "hg": 1,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "sl2p126",
+        "t": "G"
+      },
+      {
+        "p": "sl2p126",
+        "t": "M"
+      },
+      {
+        "p": "sl2p75",
+        "t": "Y"
+      },
+      {
+        "p": "pcup7",
+        "t": "Y"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c3l2",
+    "fase": "16AVOS",
+    "llave": "16AVOS-03",
+    "leg": 2,
+    "home_id": "thc6",
+    "away_id": "sl214",
+    "hg": 0,
+    "ag": 1,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "sl2p84",
+        "t": "Y"
+      },
+      {
+        "p": "sl2p16",
+        "t": "G"
+      },
+      {
+        "p": "thcp152",
+        "t": "Y"
+      },
+      {
+        "p": "sl2p16",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c4l1",
+    "fase": "16AVOS",
+    "llave": "16AVOS-04",
+    "leg": 1,
+    "home_id": "sl25",
+    "away_id": "thc9",
+    "hg": 1,
+    "ag": 1,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "sl2p46",
+        "t": "G"
+      },
+      {
+        "p": "sl2p27",
+        "t": "M"
+      },
+      {
+        "p": "thcp47",
+        "t": "G"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c4l2",
+    "fase": "16AVOS",
+    "llave": "16AVOS-04",
+    "leg": 2,
+    "home_id": "thc9",
+    "away_id": "sl25",
+    "hg": 3,
+    "ag": 1,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp89",
+        "t": "G"
+      },
+      {
+        "p": "sl2p4",
+        "t": "G"
+      },
+      {
+        "p": "thcp151",
+        "t": "Y"
+      },
+      {
+        "p": "thcp78",
+        "t": "G"
+      },
+      {
+        "p": "thcp25",
+        "t": "G"
+      },
+      {
+        "p": "thcp25",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c5l1",
+    "fase": "16AVOS",
+    "llave": "16AVOS-05",
+    "leg": 1,
+    "home_id": "thc7",
+    "away_id": "sl212",
+    "hg": 0,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp153",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c5l2",
+    "fase": "16AVOS",
+    "llave": "16AVOS-05",
+    "leg": 2,
+    "home_id": "sl212",
+    "away_id": "thc7",
+    "hg": 0,
+    "ag": 1,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp53",
+        "t": "G"
+      },
+      {
+        "p": "thcp53",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c6l1",
+    "fase": "16AVOS",
+    "llave": "16AVOS-06",
+    "leg": 1,
+    "home_id": "thc5",
+    "away_id": "sl22",
+    "hg": 2,
+    "ag": 1,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp33",
+        "t": "G"
+      },
+      {
+        "p": "pcup13",
+        "t": "G"
+      },
+      {
+        "p": "pcup13",
+        "t": "M"
+      },
+      {
+        "p": "pcup14",
+        "t": "G"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c6l2",
+    "fase": "16AVOS",
+    "llave": "16AVOS-06",
+    "leg": 2,
+    "home_id": "sl22",
+    "away_id": "thc5",
+    "hg": 1,
+    "ag": 1,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "sl2p91",
+        "t": "G"
+      },
+      {
+        "p": "thcp33",
+        "t": "G"
+      },
+      {
+        "p": "thcp123",
+        "t": "Y"
+      },
+      {
+        "p": "sl2p91",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c7l1",
+    "fase": "16AVOS",
+    "llave": "16AVOS-07",
+    "leg": 1,
+    "home_id": "thc10",
+    "away_id": "sl215",
+    "hg": 1,
+    "ag": 2,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp101",
+        "t": "G"
+      },
+      {
+        "p": "sl2p29",
+        "t": "G"
+      },
+      {
+        "p": "sl2p29",
+        "t": "M"
+      },
+      {
+        "p": "sl2p7",
+        "t": "G"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c7l2",
+    "fase": "16AVOS",
+    "llave": "16AVOS-07",
+    "leg": 2,
+    "home_id": "sl215",
+    "away_id": "thc10",
+    "hg": 0,
+    "ag": 1,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "pmusla80w25k",
+        "t": "Y"
+      },
+      {
+        "p": "pmuslasnb3x8",
+        "t": "G"
+      },
+      {
+        "p": "sl2p7",
+        "t": "Y"
+      },
+      {
+        "p": "thcp63",
+        "t": "R"
+      },
+      {
+        "p": "pmuslasnb3x8",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c8l1",
+    "fase": "16AVOS",
+    "llave": "16AVOS-08",
+    "leg": 1,
+    "home_id": "thc14",
+    "away_id": "thc1",
+    "hg": 0,
+    "ag": 2,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp88",
+        "t": "G"
+      },
+      {
+        "p": "thcp173",
+        "t": "Y"
+      },
+      {
+        "p": "thcp70",
+        "t": "G"
+      },
+      {
+        "p": "thcp40",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c8l2",
+    "fase": "16AVOS",
+    "llave": "16AVOS-08",
+    "leg": 2,
+    "home_id": "thc1",
+    "away_id": "thc14",
+    "hg": 0,
+    "ag": 1,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp75",
+        "t": "G"
+      },
+      {
+        "p": "thcp75",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c9l1",
+    "fase": "16AVOS",
+    "llave": "16AVOS-09",
+    "leg": 1,
+    "home_id": "thc2",
+    "away_id": "thc12",
+    "hg": 5,
+    "ag": 3,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp29",
+        "t": "G"
+      },
+      {
+        "p": "thcp6",
+        "t": "G"
+      },
+      {
+        "p": "thcp46",
+        "t": "G"
+      },
+      {
+        "p": "thcp46",
+        "t": "G"
+      },
+      {
+        "p": "thcp46",
+        "t": "M"
+      },
+      {
+        "p": "pcup25",
+        "t": "G"
+      },
+      {
+        "p": "thcp50",
+        "t": "G"
+      },
+      {
+        "p": "thcp13",
+        "t": "G"
+      },
+      {
+        "p": "pcup28",
+        "t": "G"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "c9l2",
+    "fase": "16AVOS",
+    "llave": "16AVOS-09",
+    "leg": 2,
+    "home_id": "thc12",
+    "away_id": "thc2",
+    "hg": 1,
+    "ag": 3,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp13",
+        "t": "G"
+      },
+      {
+        "p": "thcp154",
+        "t": "G"
+      },
+      {
+        "p": "thcp46",
+        "t": "G"
+      },
+      {
+        "p": "thcp29",
+        "t": "Y"
+      },
+      {
+        "p": "thcp154",
+        "t": "G"
+      },
+      {
+        "p": "thcp154",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cgen1",
+    "fase": "16AVOS",
+    "llave": "16AVOS-07",
+    "leg": 3,
+    "home_id": "thc10",
+    "away_id": "sl215",
+    "hg": 0,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "prox",
+    "ev": [],
+    "season_id": 1
+  },
+  {
+    "id": "cmusiassq9qi",
+    "fase": "OCTAVOS",
+    "llave": "OCTAVOS-01",
+    "leg": 1,
+    "home_id": "thc11",
+    "away_id": "sl23",
+    "hg": 1,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp51",
+        "t": "G"
+      },
+      {
+        "p": "thcp51",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmusiassquug",
+    "fase": "OCTAVOS",
+    "llave": "OCTAVOS-01",
+    "leg": 2,
+    "home_id": "sl23",
+    "away_id": "thc11",
+    "hg": 1,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp157",
+        "t": "Y"
+      },
+      {
+        "p": "pmv4h9spdzl3",
+        "t": "Y"
+      },
+      {
+        "p": "sl2p83",
+        "t": "G"
+      },
+      {
+        "p": "sl2p3",
+        "t": "Y"
+      },
+      {
+        "p": "sl2p83",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmusjygyte45",
+    "fase": "OCTAVOS",
+    "llave": "OCTAVOS-02",
+    "leg": 2,
+    "home_id": "thc9",
+    "away_id": "sl214",
+    "hg": 0,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "sl2p152",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmusjygyti51",
+    "fase": "OCTAVOS",
+    "llave": "OCTAVOS-02",
+    "leg": 1,
+    "home_id": "sl214",
+    "away_id": "thc9",
+    "hg": 0,
+    "ag": 2,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp47",
+        "t": "G"
+      },
+      {
+        "p": "thcp47",
+        "t": "G"
+      },
+      {
+        "p": "thcp47",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmusktjrkanw",
+    "fase": "OCTAVOS",
+    "llave": "OCTAVOS-03",
+    "leg": 2,
+    "home_id": "thc5",
+    "away_id": "thc7",
+    "hg": 3,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp156",
+        "t": "G"
+      },
+      {
+        "p": "thcp32",
+        "t": "G"
+      },
+      {
+        "t": "OG",
+        "team": "thc5"
+      },
+      {
+        "p": "thcp32",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmusktjrkw0c",
+    "fase": "OCTAVOS",
+    "llave": "OCTAVOS-03",
+    "leg": 1,
+    "home_id": "thc7",
+    "away_id": "thc5",
+    "hg": 3,
+    "ag": 1,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp112",
+        "t": "G"
+      },
+      {
+        "p": "thcp52",
+        "t": "G"
+      },
+      {
+        "p": "thcp52",
+        "t": "Y"
+      },
+      {
+        "p": "thcp90",
+        "t": "G"
+      },
+      {
+        "p": "pmuumw5tkl2a",
+        "t": "G"
+      },
+      {
+        "p": "thcp52",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmusmoz8512f",
+    "fase": "OCTAVOS",
+    "llave": "OCTAVOS-05",
+    "leg": 2,
+    "home_id": "sl29",
+    "away_id": "thc2",
+    "hg": 0,
+    "ag": 2,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "sl2p28",
+        "t": "Y"
+      },
+      {
+        "p": "thcp67",
+        "t": "Y"
+      },
+      {
+        "p": "pcup25",
+        "t": "G"
+      },
+      {
+        "p": "thcp6",
+        "t": "G"
+      },
+      {
+        "p": "thcp6",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmusmoz85s1q",
+    "fase": "OCTAVOS",
+    "llave": "OCTAVOS-05",
+    "leg": 1,
+    "home_id": "thc2",
+    "away_id": "sl29",
+    "hg": 1,
+    "ag": 2,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "sl2p145",
+        "t": "G"
+      },
+      {
+        "p": "sl2p51",
+        "t": "G"
+      },
+      {
+        "p": "thcp46",
+        "t": "G"
+      },
+      {
+        "p": "sl2p51",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmusnmlb0bbs",
+    "fase": "OCTAVOS",
+    "llave": "OCTAVOS-06",
+    "leg": 2,
+    "home_id": "sl26",
+    "away_id": "thc4",
+    "hg": 1,
+    "ag": 2,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "sl2p40",
+        "t": "G"
+      },
+      {
+        "p": "sl2p6",
+        "t": "R"
+      },
+      {
+        "p": "thcp57",
+        "t": "G"
+      },
+      {
+        "p": "pmv4jxl7fhp5",
+        "t": "G"
+      },
+      {
+        "p": "pmv4jxl7fhp5",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmusnmlb0u0j",
+    "fase": "OCTAVOS",
+    "llave": "OCTAVOS-06",
+    "leg": 1,
+    "home_id": "thc4",
+    "away_id": "sl26",
+    "hg": 2,
+    "ag": 1,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp57",
+        "t": "G"
+      },
+      {
+        "p": "pmuuo95aig01",
+        "t": "G"
+      },
+      {
+        "p": "thcp105",
+        "t": "G"
+      },
+      {
+        "p": "thcp163",
+        "t": "Y"
+      },
+      {
+        "p": "thcp57",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmut9a6n3r4h",
+    "fase": "16AVOS",
+    "llave": "16AVOS-07",
+    "leg": 3,
+    "home_id": "thc10",
+    "away_id": "sl215",
+    "hg": 1,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp19",
+        "t": "Y"
+      },
+      {
+        "p": "thcp20",
+        "t": "G"
+      },
+      {
+        "p": "thcp20",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmuujtkjz1kq",
+    "fase": "OCTAVOS",
+    "llave": "OCTAVOS-07",
+    "leg": 1,
+    "home_id": "thc16",
+    "away_id": "thc15",
+    "hg": 3,
+    "ag": 1,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp1",
+        "t": "G"
+      },
+      {
+        "p": "thcp43",
+        "t": "G"
+      },
+      {
+        "p": "pmv4gq0rn3sd",
+        "t": "Y"
+      },
+      {
+        "p": "thcp131",
+        "t": "Y"
+      },
+      {
+        "p": "thcp44",
+        "t": "G"
+      },
+      {
+        "p": "thcp5",
+        "t": "G"
+      },
+      {
+        "p": "thcp1",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmuujtkjzstt",
+    "fase": "OCTAVOS",
+    "llave": "OCTAVOS-07",
+    "leg": 2,
+    "home_id": "thc15",
+    "away_id": "thc16",
+    "hg": 2,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp26",
+        "t": "G"
+      },
+      {
+        "p": "thcp5",
+        "t": "G"
+      },
+      {
+        "p": "thcp5",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmuul0ow43n1",
+    "fase": "OCTAVOS",
+    "llave": "OCTAVOS-08",
+    "leg": 2,
+    "home_id": "sl21",
+    "away_id": "sl27",
+    "hg": 0,
+    "ag": 3,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "sl2p79",
+        "t": "G"
+      },
+      {
+        "p": "sl2p106",
+        "t": "Y"
+      },
+      {
+        "p": "sl2p121",
+        "t": "G"
+      },
+      {
+        "p": "pmv4ktwunvz1",
+        "t": "G"
+      },
+      {
+        "p": "sl2p79",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmuul0ow47nc",
+    "fase": "OCTAVOS",
+    "llave": "OCTAVOS-08",
+    "leg": 1,
+    "home_id": "sl27",
+    "away_id": "sl21",
+    "hg": 1,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "sl2p79",
+        "t": "G"
+      },
+      {
+        "p": "sl2p79",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmuulh5kop7n",
+    "fase": "OCTAVOS",
+    "llave": "OCTAVOS-04",
+    "leg": 1,
+    "home_id": "thc10",
+    "away_id": "thc1",
+    "hg": 1,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp2",
+        "t": "Y"
+      },
+      {
+        "t": "OG",
+        "team": "thc10"
+      },
+      {
+        "p": "thcp99",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmuulh5kowi2",
+    "fase": "OCTAVOS",
+    "llave": "OCTAVOS-04",
+    "leg": 2,
+    "home_id": "thc1",
+    "away_id": "thc10",
+    "hg": 2,
+    "ag": 3,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp27",
+        "t": "G"
+      },
+      {
+        "p": "pmv4ip8xdn6b",
+        "t": "G"
+      },
+      {
+        "p": "thcp38",
+        "t": "G"
+      },
+      {
+        "p": "thcp19",
+        "t": "G"
+      },
+      {
+        "p": "thcp173",
+        "t": "Y"
+      },
+      {
+        "p": "thcp101",
+        "t": "G"
+      },
+      {
+        "p": "thcp101",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmv4haqbmcw8",
+    "fase": "OCTAVOS",
+    "llave": "OCTAVOS-01",
+    "leg": 3,
+    "home_id": "thc11",
+    "away_id": "sl23",
+    "hg": 1,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp51",
+        "t": "G"
+      },
+      {
+        "p": "thcp51",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmv4iqcte0m2",
+    "fase": "CUARTOS",
+    "llave": "CUARTOS-02",
+    "leg": 2,
+    "home_id": "thc10",
+    "away_id": "thc5",
+    "hg": 0,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "pmv4onptw1et",
+        "t": "Y"
+      },
+      {
+        "p": "pmv4ooftn1a6",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmv4iqcteu5m",
+    "fase": "CUARTOS",
+    "llave": "CUARTOS-02",
+    "leg": 1,
+    "home_id": "thc5",
+    "away_id": "thc10",
+    "hg": 2,
+    "ag": 1,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp112",
+        "t": "Y"
+      },
+      {
+        "p": "thcp112",
+        "t": "G"
+      },
+      {
+        "p": "thcp69",
+        "t": "G"
+      },
+      {
+        "p": "pmv4mqoxlvl9",
+        "t": "G"
+      },
+      {
+        "p": "thcp69",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmv4jy77jddb",
+    "fase": "CUARTOS",
+    "llave": "CUARTOS-03",
+    "leg": 1,
+    "home_id": "thc2",
+    "away_id": "thc4",
+    "hg": 1,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp114",
+        "t": "Y"
+      },
+      {
+        "p": "thcp29",
+        "t": "G"
+      },
+      {
+        "p": "thcp142",
+        "t": "Y"
+      },
+      {
+        "p": "thcp29",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmv4jy77jhjp",
+    "fase": "CUARTOS",
+    "llave": "CUARTOS-03",
+    "leg": 2,
+    "home_id": "thc4",
+    "away_id": "thc2",
+    "hg": 0,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "prox",
+    "ev": [],
+    "season_id": 1
+  },
+  {
+    "id": "cmv4kd03rrd8",
+    "fase": "OCTAVOS",
+    "llave": "OCTAVOS-07",
+    "leg": 3,
+    "home_id": "thc16",
+    "away_id": "thc15",
+    "hg": 0,
+    "ag": 1,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp5",
+        "t": "G"
+      },
+      {
+        "p": "thcp5",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmv4laxrmbfi",
+    "fase": "CUARTOS",
+    "llave": "CUARTOS-01",
+    "leg": 2,
+    "home_id": "thc9",
+    "away_id": "thc11",
+    "hg": 1,
+    "ag": 3,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "t": "OG",
+        "team": "thc9"
+      },
+      {
+        "p": "thcp51",
+        "t": "G"
+      },
+      {
+        "p": "thcp51",
+        "t": "G"
+      },
+      {
+        "p": "thcp51",
+        "t": "G"
+      },
+      {
+        "p": "thcp157",
+        "t": "Y"
+      },
+      {
+        "p": "thcp151",
+        "t": "Y"
+      },
+      {
+        "p": "thcp51",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmv4laxrmsvr",
+    "fase": "CUARTOS",
+    "llave": "CUARTOS-01",
+    "leg": 1,
+    "home_id": "thc11",
+    "away_id": "thc9",
+    "hg": 2,
+    "ag": 1,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp51",
+        "t": "G"
+      },
+      {
+        "p": "thcp133",
+        "t": "G"
+      },
+      {
+        "p": "thcp162",
+        "t": "Y"
+      },
+      {
+        "p": "thcp23",
+        "t": "G"
+      },
+      {
+        "p": "thcp133",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmv4lp9qqcke",
+    "fase": "CUARTOS",
+    "llave": "CUARTOS-04",
+    "leg": 1,
+    "home_id": "thc15",
+    "away_id": "sl27",
+    "hg": 3,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "fin",
+    "ev": [
+      {
+        "p": "thcp4",
+        "t": "G"
+      },
+      {
+        "p": "thcp5",
+        "t": "G"
+      },
+      {
+        "p": "thcp5",
+        "t": "G"
+      },
+      {
+        "p": "thcp5",
+        "t": "M"
+      }
+    ],
+    "season_id": 1
+  },
+  {
+    "id": "cmv4lp9qqmt4",
+    "fase": "CUARTOS",
+    "llave": "CUARTOS-04",
+    "leg": 2,
+    "home_id": "sl27",
+    "away_id": "thc15",
+    "hg": 0,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "prox",
+    "ev": [],
+    "season_id": 1
+  },
+  {
+    "id": "cmv4oop5at4k",
+    "fase": "SEMIFINAL",
+    "llave": "SEMIFINAL-01",
+    "leg": 1,
+    "home_id": "thc11",
+    "away_id": "thc5",
+    "hg": 0,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "prox",
+    "ev": [],
+    "season_id": 1
+  },
+  {
+    "id": "cmv4oop5b8ce",
+    "fase": "SEMIFINAL",
+    "llave": "SEMIFINAL-01",
+    "leg": 2,
+    "home_id": "thc5",
+    "away_id": "thc11",
+    "hg": 0,
+    "ag": 0,
+    "pl": null,
+    "pv": null,
+    "status": "prox",
+    "ev": [],
+    "season_id": 1
+  }
+]
