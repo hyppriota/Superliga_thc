@@ -359,7 +359,7 @@ function addCup(){const l=document.getElementById('cl').value.trim(),h=document.
 
 const divHeader=dv=>`<span style="display:flex;align-items:center">${DLOGO[dv]?`<img class="dl" alt="" src="${DLOGO[dv]}">`:''}${DIVS[dv]}</span>`;
 const LOGOF=new Set(['sl21','sl210','sl211','sl212','sl213','sl214','sl215','sl216','sl22','sl23','sl24','sl25','sl26','sl27','sl28','sl29','thc1','thc10','thc11','thc12','thc13','thc14','thc15','thc16','thc2','thc3','thc4','thc5','thc6','thc7','thc8','thc9']);
-function crest(id){const t=T(id);if(!t)return'<span class="cr">?</span>';if(LOGOF.has(id))return `<img class="cr" alt="" src="logos/${id}.webp" onerror="this.outerHTML=CRESTFB('${id}')">`;if(LOGOS[id])return `<img class="cr" alt="" src="${LOGOS[id]}">`;const init=t.name.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();
+function crest(id){const t=T(id);if(!t)return'<span class="cr">?</span>';if(t.logo_url)return `<img class="cr" alt="" src="${t.logo_url}" onerror="this.outerHTML=CRESTFB('${id}')">`;if(LOGOF.has(id))return `<img class="cr" alt="" src="logos/${id}.webp" onerror="this.outerHTML=CRESTFB('${id}')">`;if(LOGOS[id])return `<img class="cr" alt="" src="${LOGOS[id]}">`;const init=t.name.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();
  let hue=0;for(const c of t.name)hue+=c.charCodeAt(0);hue%=360;
  return `<span class="cr" style="background:hsl(${hue},55%,42%)">${init}</span>`}
 function CRESTFB(id){const t=T(id);if(!t)return'<span class="cr">?</span>';const init=t.name.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();let hue=0;for(const c of t.name)hue+=c.charCodeAt(0);hue%=360;return `<span class="cr" style="background:hsl(${hue},55%,42%)">${init}</span>`}
