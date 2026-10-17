@@ -47,7 +47,7 @@ html = read('index.html')
 body = re.search(r'<body>(.*)</body>', html, re.S).group(1)
 body = body.replace('assets/logo-superliga.webp', data_uri(os.path.join(ROOT, 'assets/logo-superliga.webp')))
 body = body.replace('</header>', f'</header>\n<div class="pvbar"><span><b>Vista previa</b> · datos del {fecha_txt} · solo lectura</span>'
-                    '<a href="https://superligathc.netlify.app" target="_blank" rel="noopener">Abrir el sitio ↗</a></div>')
+                    '<a href="https://superligathc.pages.dev" target="_blank" rel="noopener">Abrir el sitio ↗</a></div>')
 body = re.sub(r'<script src="https://cdn\.jsdelivr\.net/npm/@supabase/[^"]+"></script>',
               lambda _: '<script>window.__SNAP=' + json.dumps(data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/') + ';' + client + '</script>', body)
 for f in ['data', 'logic', 'ui', 'views', 'app']:

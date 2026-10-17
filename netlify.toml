@@ -1,0 +1,8 @@
+# El sitio ahora se publica en Cloudflare Pages. Netlify solo redirige el link viejo
+# (superligathc.netlify.app) al nuevo, conservando la página que se pidió.
+# Cloudflare ignora este archivo.
+[[redirects]]
+  from = "/*"
+  to = "https://superligathc.pages.dev/:splat"
+  status = 301
+  force = true
