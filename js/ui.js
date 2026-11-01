@@ -59,8 +59,9 @@ function evEditor(m){
   const pl=db.players.filter(p=>p.team===team).sort((a,b)=>(POSORD[a.position]??4)-(POSORD[b.position]??4)||a.name.localeCompare(b.name));
   const rival=team===m.home?m.away:m.home;
   return `<div class="qe-col"><div class="qe-h">${crest(team)}<b>${tn(team)}</b></div>
-   ${pl.map(p=>`<div class="qe-r${susp.has(p.id)?' susp':''}"><span class="qe-n">${posChip(p.position)}<span>${esc(p.name)}</span>${susp.has(p.id)?'<span class="qe-s" title="Suspendido para este partido">⛔</span>':''}${badges(p.id)}</span><span class="qe-ks">${btn(p.id,'G','Gol de '+esc(p.name))}${btn(p.id,'Y','Amarilla a '+esc(p.name))}${btn(p.id,'R','Roja a '+esc(p.name))}${btn(p.id,'M','MVP: '+esc(p.name))}</span></div>`).join('')||'<div class="mu">Sin jugadores cargados.</div>'}
-   <button class="qe-og" onclick="addEv('${m.id}','OG',null,'${rival}')">⚽ Autogol de ${tn(team)} <span class="mu">(suma para ${tn(rival)})</span></button></div>`;
+   ${pl.map(p=>`<div class="qe-r${susp.has(p.id)?' susp':''}${S.justAdded===p.id?' qe-new':''}"><span class="qe-n">${posChip(p.position)}<span>${esc(p.name)}</span>${susp.has(p.id)?'<span class="qe-s" title="Suspendido para este partido">⛔</span>':''}${badges(p.id)}</span><span class="qe-ks">${btn(p.id,'G','Gol de '+esc(p.name))}${btn(p.id,'Y','Amarilla a '+esc(p.name))}${btn(p.id,'R','Roja a '+esc(p.name))}${btn(p.id,'M','MVP: '+esc(p.name))}</span></div>`).join('')||'<div class="mu">Sin jugadores cargados.</div>'}
+   <button class="qe-og" onclick="addEv('${m.id}','OG',null,'${rival}')">⚽ Autogol de ${tn(team)} <span class="mu">(suma para ${tn(rival)})</span></button>
+   <div class="qe-add"><input id="np-${team}" placeholder="Nuevo jugador" aria-label="Nombre del nuevo jugador de ${tn(team)}" autocomplete="off" onkeydown="if(event.key==='Enter')addPlayerQuick('${m.id}','${team}')"><select id="npp-${team}" aria-label="Posición"><option value="">Pos.</option><option value="POR">GK</option><option value="DEF">DEF</option><option value="MED">MED</option><option value="DEL">DEL</option></select><button onclick="addPlayerQuick('${m.id}','${team}')">+ Agregar</button></div></div>`;
  };
  const list=ev.map((e,i)=>e.t==='OG'
    ?`<div class="rw" style="padding:4px 0"><span class="og">⚽ Autogol <span class="mu">(a favor de ${tn(e.team)})</span></span><a class="x" onclick="delEv('${m.id}',${i})">Quitar</a></div>`

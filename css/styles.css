@@ -241,3 +241,11 @@ a:hover{text-decoration:underline}
 .qe-k:hover{border-color:var(--bl)}
 .qe-og{margin-top:6px;border:1px dashed var(--ln);background:none;color:var(--tx);border-radius:6px;padding:6px 8px;font-size:12px;text-align:left}
 .qe-list{margin-top:6px;padding-top:6px;border-top:1px solid var(--ln)}
+/* Agregar jugador desde la ventana de eventos */
+.qe-add{display:flex;gap:4px;margin-top:6px}
+.qe-add input{flex:1;min-width:0;padding:6px 8px;border:1px solid var(--ln);border-radius:6px;background:var(--bg);color:var(--tx);font-size:12.5px}
+.qe-add select{padding:6px 4px;border:1px solid var(--ln);border-radius:6px;background:var(--bg);color:var(--tx);font-size:12px}
+.qe-add button{border:1px solid var(--ac);background:var(--ac);color:#04140b;border-radius:6px;padding:6px 9px;font-size:12px;font-weight:600;white-space:nowrap}
+.qe-new{animation:qeflash 2s ease-out}
+@keyframes qeflash{0%{background:rgba(15,157,88,.35)}100%{background:transparent}}
+@media(prefers-reduced-motion:reduce){.qe-new{animation:none;background:rgba(15,157,88,.15)}}

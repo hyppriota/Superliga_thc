@@ -138,7 +138,12 @@ function upd(id,k,v){
  const ST={prox:'Próximo',vivo:'En juego',fin:'Finalizado'};
  commit(k==='status'?`Estado: ${ST[v]||v}`:(k==='hg'||k==='ag')?'Marcador cambiado':(k==='pl'||k==='pv')?'Penales cambiados':(k==='home'||k==='away')?'Equipo cambiado':'Cambio guardado');
  if(kickoff)setTimeout(()=>suspensionAlert(m),0); // al pasar a "En juego": avisa quién no puede jugar
- if(finish)setTimeout(()=>finishReview(m),0);    // al finalizar: revisa la carga y las suspensiones cumplidas
+ if(finish){
+  // Al finalizar se cierra la ventana de eventos, salvo que falte algo (goles que no cuadran, MVP, penales):
+  // en ese caso queda abierta para completarlo.
+  if(S.evOpen===m.id&&!matchIssues(m).length){S.evOpen=null;render()}
+  setTimeout(()=>finishReview(m),0);             // revisa la carga y las suspensiones cumplidas
+ }
 }
 async function del(kind,id){
  const list=db[kind];const item=list&&list.find(x=>x.id===id);if(!item)return;
@@ -189,6 +194,18 @@ function addEv(id,t,p,team){
   const isCup=!!m.llave,c=cardsOf(p,isCup),prev={y:c.y-(t==='Y'),r:c.r-(t==='R')};
   if(suspGen(c,isCup)>suspGen(prev,isCup))toast(`🚫 ${anyP(p)?.name} queda suspendido para el próximo partido de ${isCup?'copa':'liga'} (${t==='R'?'roja':`${c.y} amarillas`}).`,'error',7000);
  }
+}
+/* Agregar un jugador sin salir de la ventana de eventos */
+function addPlayerQuick(mid,team){
+ const inp=document.getElementById('np-'+team),pos=document.getElementById('npp-'+team);
+ const n=(inp?.value||'').trim();
+ if(!n){toast('Escribí el nombre del jugador','error');inp?.focus();return}
+ if(db.players.some(p=>p.team===team&&p.name.toLowerCase()===n.toLowerCase()))return toast(`${n} ya está en el plantel de ${T(team)?.name}`,'error');
+ const id=uid('p');
+ db.players.push({id,name:n,team,position:pos?.value||null,goals:0,mvp:0,yc:0,rc:0,seasonId:SEASON_ID});
+ S.justAdded=id;setTimeout(()=>{if(S.justAdded===id)S.justAdded=null},2500); // resalta la fila nueva un momento
+ commit(`${n} agregado a ${T(team)?.name}`);
+ document.querySelector('.qe-new')?.scrollIntoView({block:'center',behavior:'smooth'});
 }
 function delEv(id,i){
  const m=findM(id),was=inSync(m),e=m.ev[i];
