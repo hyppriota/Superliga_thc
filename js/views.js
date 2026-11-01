@@ -98,7 +98,7 @@ const V={
   const isPair=m=>(m.home===a&&m.away===b)||(m.home===b&&m.away===a);
   const all=teamMatches(a).filter(m=>isPair(m)&&m.status==='fin')
    .map(m=>({...m,comp:m.cup?'Copa':'Liga',tag:m.cup?m.fase+' · '+m.llave:'Fecha '+m.round}))
-   .sort((x,y)=>matchRank(y)-matchRank(x));
+   .sort(byRecent);
   let wa=0,wb=0,e=0;all.forEach(m=>{const ga=m.home===a?m.hg:m.ag,gb=m.home===b?m.hg:m.ag;if(ga>gb)wa++;else if(gb>ga)wb++;else e++});
   return `<div class="seg"><button onclick="goBack()">← Volver</button></div>
   <div class="box"><h3 style="justify-content:center">Enfrentamientos anteriores<span>Jugaron ${all.length} ${all.length===1?'vez':'veces'}</span></h3>
@@ -121,7 +121,7 @@ const V={
   const pl=db.players.filter(p=>p.team===t.id).sort((a,b)=>(POSORD[a.position]??4)-(POSORD[b.position]??4)||a.name.localeCompare(b.name));
   const all=teamMatches(t.id);
   const next=all.filter(m=>m.status!=='fin').sort((a,b)=>matchRank(a)-matchRank(b));
-  const last=all.filter(m=>m.status==='fin').sort((a,b)=>matchRank(b)-matchRank(a));
+  const last=all.filter(m=>m.status==='fin').sort(byRecent);
   const st=standings(t.div),pos=st.findIndex(r=>r.id===t.id)+1;
   const rez=m=>{const gf=m.home===t.id?m.hg:m.ag,gc=m.home===t.id?m.ag:m.hg;return gf>gc?'W':gf<gc?'L':'D'};
   const pills=p=>{const a=[],G=tot(p,'goals'),M=tot(p,'mvp'),Y=tot(p,'yc'),R=tot(p,'rc');if(G)a.push(`⚽ ${G}`);if(M)a.push(`🏅 ${M}`);if(Y)a.push(`🟨 ${Y}`);if(R)a.push(`🟥 ${R}`);return a.length?`<span class="pst">${a.join('  ')}</span>`:'<span class="mu">Sin registros</span>'};

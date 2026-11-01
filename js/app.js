@@ -132,6 +132,8 @@ function upd(id,k,v){
  const m=findM(id);if(!m)return;
  const kickoff=k==='status'&&v==='vivo'&&m.status!=='vivo';
  const finish=k==='status'&&v==='fin'&&m.status!=='fin';
+ // Momento en que se finaliza: define el orden real (último partido, forma del equipo)
+ if(k==='status'){if(v==='fin'&&m.status!=='fin')m.fin_at=new Date().toISOString();else if(v!=='fin')m.fin_at=null}
  if(k==='hg'||k==='ag')m[k]=v===''?0:Math.max(0,+v||0);
  else if(k==='pl'||k==='pv')m[k]=v===''?null:Math.max(0,+v||0);
  else m[k]=v===''?null:v;

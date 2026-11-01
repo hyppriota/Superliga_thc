@@ -51,10 +51,10 @@ function recompute(){
  CUPMAP={};RECENT={liga:{},copa:{}};
  const mark=(scope,id,k,v)=>{const r=RECENT[scope][id]||(RECENT[scope][id]={});if(!(r[k]>=v))r[k]=v};
  db.matches.forEach(m=>(m.ev||[]).forEach((e,i)=>{const p=P[e.p],k=EV_KEY[e.t];if(!p||!k)return;
-  p[k]++;mark('liga',p.id,k,matchRank(m)*1000+i)}));
+  p[k]++;mark('liga',p.id,k,recencyValue(m)+i)}));
  db.cup.forEach(m=>(m.ev||[]).forEach((e,i)=>{const p=P[e.p],k=EV_KEY[e.t];if(!p||!k)return;
   const c=CUPMAP[p.id]||(CUPMAP[p.id]={id:p.id,name:p.name,team:p.team,goals:0,mvp:0,yc:0,rc:0});c[k]++;
-  mark('copa',p.id,k,matchRank({...m,cup:true})*1000+i)}));
+  mark('copa',p.id,k,recencyValue({...m,cup:true})+i)}));
  db.cupPlayers=Object.values(CUPMAP).map(c=>({...c,suspDone:prevDone[c.id]||0}));
 }
 /* Red de seguridad: si un evento de copa apunta a un jugador que no existe,
@@ -230,9 +230,14 @@ function suspendedFor(m){
  }).filter(r=>r.pend>0).sort((a,b)=>(a.p.team===m.home?0:1)-(b.p.team===m.home?0:1)||a.p.name.localeCompare(b.p.name));
 }
 
-/* Orden temporal aproximado para mezclar liga y copa (no hay fechas reales):
-   la copa se considera posterior a la liga, y dentro de la copa manda la fase y luego el partido. */
+/* Orden aproximado (sin fechas): para partidos por jugar, y como respaldo si falta fin_at.
+   La copa se considera posterior a la liga; dentro de la copa manda la fase y luego el partido. */
 const matchRank=m=>m.cup?9000+(FASE_ORD[m.fase]||0)*10+(m.leg||0):(m.round||0);
+/* Orden real de los partidos jugados: el momento en que se marcaron como "Finalizado"
+   (fin_at). Si a un partido viejo le falta ese dato, se usa el orden aproximado. */
+const finKey=m=>m.fin_at?Date.parse(m.fin_at):0;
+const byRecent=(a,b)=>finKey(b)-finKey(a)||matchRank(b)-matchRank(a);
+const recencyValue=m=>(finKey(m)||matchRank(m))*1000;
 function teamMatches(id){
  return[...db.matches.filter(m=>m.home===id||m.away===id).map(m=>({...m,cup:false})),
   ...db.cup.filter(m=>m.home===id||m.away===id).map(m=>({...m,cup:true}))]

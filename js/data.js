@@ -20,10 +20,10 @@ let SEASON_ID=null;
 
 const TEAM_COLS=['id','name','div','fed','dt','stadium','logo_url'];
 const toDbTeam=t=>Object.fromEntries(TEAM_COLS.map(c=>[c,t[c]??null]));
-const toDbMatch=m=>({id:m.id,div:m.div,round:m.round,home_id:m.home,away_id:m.away,hg:m.hg,ag:m.ag,status:m.status,time:m.time||null,ev:m.ev||[],season_id:m.season_id||SEASON_ID});
-const fromDbMatch=r=>({id:r.id,div:r.div,round:r.round,home:r.home_id,away:r.away_id,hg:r.hg,ag:r.ag,status:r.status,time:r.time,ev:r.ev||[],season_id:r.season_id});
-const toDbCup=c=>({id:c.id,fase:c.fase,llave:c.llave,leg:c.leg,home_id:c.home,away_id:c.away,hg:c.hg,ag:c.ag,pl:c.pl??null,pv:c.pv??null,status:c.status,ev:c.ev||[],season_id:c.season_id||SEASON_ID});
-const fromDbCup=r=>({id:r.id,fase:r.fase,llave:r.llave,leg:r.leg,home:r.home_id,away:r.away_id,hg:r.hg,ag:r.ag,pl:r.pl,pv:r.pv,status:r.status,ev:r.ev||[],season_id:r.season_id});
+const toDbMatch=m=>({id:m.id,div:m.div,round:m.round,home_id:m.home,away_id:m.away,hg:m.hg,ag:m.ag,status:m.status,time:m.time||null,ev:m.ev||[],season_id:m.season_id||SEASON_ID,fin_at:m.fin_at||null});
+const fromDbMatch=r=>({id:r.id,div:r.div,round:r.round,home:r.home_id,away:r.away_id,hg:r.hg,ag:r.ag,status:r.status,time:r.time,ev:r.ev||[],season_id:r.season_id,fin_at:r.fin_at||null});
+const toDbCup=c=>({id:c.id,fase:c.fase,llave:c.llave,leg:c.leg,home_id:c.home,away_id:c.away,hg:c.hg,ag:c.ag,pl:c.pl??null,pv:c.pv??null,status:c.status,ev:c.ev||[],season_id:c.season_id||SEASON_ID,fin_at:c.fin_at||null});
+const fromDbCup=r=>({id:r.id,fase:r.fase,llave:r.llave,leg:r.leg,home:r.home_id,away:r.away_id,hg:r.hg,ag:r.ag,pl:r.pl,pv:r.pv,status:r.status,ev:r.ev||[],season_id:r.season_id,fin_at:r.fin_at||null});
 const toDbPlayer=p=>({id:p.id,name:p.name,team_id:p.team,goals:p.goals||0,mvp:p.mvp||0,yc:p.yc||0,rc:p.rc||0,susp_done:p.suspDone||0,position:p.position||null,captain:!!p.captain,season_id:p.seasonId||SEASON_ID});
 const fromDbPlayer=r=>({id:r.id,name:r.name,team:r.team_id,goals:r.goals,mvp:r.mvp,yc:r.yc,rc:r.rc,suspDone:r.susp_done||0,position:r.position||null,captain:!!r.captain,seasonId:r.season_id});
 
