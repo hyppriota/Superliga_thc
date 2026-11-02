@@ -1,5 +1,5 @@
 /* ===== APP: estado, navegación, acciones del editor y arranque ===== */
-let db={temporadas:[],teams:[],players:[],matches:[],cup:[],cupPlayers:[]};
+let db={temporadas:[],teams:[],players:[],matches:[],cup:[],cupPlayers:[],camisetas:[]};
 let edit=false,loaded=false;
 const S={view:'tablas',div:'thc',round:null,team:null,q:'',formDir:'prev',copaView:'lista',bracketSel:null,h2h:null,evOpen:null};
 const VIEWS=['tablas','fixture','copa','jugadores','equipos','disciplina','h2h','buscar','editor'];
@@ -251,7 +251,7 @@ function importBackup(el){
  r.onload=async()=>{
   let d;try{d=JSON.parse(r.result);if(!d.teams||!d.matches)throw 0}catch(e){return toast('El archivo no tiene el formato esperado (teams, players, matches, cup).','error',6000)}
   if(!await confirmDialog(`Esto reemplaza TODOS los datos en Supabase por los del archivo (${d.teams.length} equipos, ${(d.players||[]).length} jugadores, ${d.matches.length} partidos). ¿Seguir?`,'Reemplazar'))return;
-  d.players=d.players||[];d.cup=d.cup||[];d.cupPlayers=d.cupPlayers||[];d.temporadas=db.temporadas;
+  d.players=d.players||[];d.cup=d.cup||[];d.cupPlayers=d.cupPlayers||[];d.temporadas=db.temporadas;d.camisetas=db.camisetas;
   db=d;applyRules();lastDecided=decidedLlaves();lastState=snapshot();render();
   await Data.save(db,{allowMass:true});
   if(Data.status!=='error')toast('Datos importados','ok');

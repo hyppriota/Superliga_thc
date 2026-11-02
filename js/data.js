@@ -54,16 +54,18 @@ const Data={
  hasUnsaved(){return this._running!==null||this._pending!==null||this.status==='error'},
 
  async load(){
-  const[se,t,p,m,cp,cm]=await Promise.all([
+  // Camisetas: dato extra de solo lectura; si falla, la app sigue sin ellas.
+  const kits=Promise.resolve().then(()=>sb.from('camisetas').select('*')).catch(()=>({data:[]}));
+  const[se,t,p,m,cp,cm,ks]=await Promise.all([
    sb.from('temporadas').select('*'),sb.from('teams').select('*'),sb.from('players').select('*'),
-   sb.from('matches').select('*'),sb.from('cup_players').select('*'),sb.from('cup_matches').select('*')]);
+   sb.from('matches').select('*'),sb.from('cup_players').select('*'),sb.from('cup_matches').select('*'),kits]);
   const err=se.error||t.error||p.error||m.error||cp.error||cm.error;
   if(err)throw err;
   if(!t.data.length)throw new Error('La base de datos no tiene equipos cargados.');
   const cur=se.data.find(s=>s.is_current)||se.data[0];
   SEASON_ID=cur?cur.id:null;
   const d={temporadas:se.data,teams:t.data,players:p.data.map(fromDbPlayer),matches:m.data.map(fromDbMatch),
-   cup:cm.data.map(fromDbCup),cupPlayers:cp.data.map(fromDbPlayer)};
+   cup:cm.data.map(fromDbCup),cupPlayers:cp.data.map(fromDbPlayer),camisetas:(ks&&!ks.error&&ks.data)||[]};
   this.takeSnapshot(d);
   return d;
  },

@@ -192,9 +192,9 @@ function showSaveStatus(s,info){
 }
 
 /* ---- Ventanas (login / confirmación) ---- */
-function openModal(html,onMount){
+function openModal(html,onMount,cls=''){
  const root=document.getElementById('modal-root');
- root.innerHTML=`<div class="mback" onclick="if(event.target===this)closeModal()"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;
+ root.innerHTML=`<div class="mback" onclick="if(event.target===this)closeModal()"><div class="modal ${cls}" role="dialog" aria-modal="true">${html}</div></div>`;
  const first=root.querySelector('input,button');if(first)first.focus();
  if(onMount)onMount(root);
 }
@@ -229,4 +229,44 @@ function loginDialog(){
    };
   });
  });
+}
+
+/* ===== Camisetas =====
+   Se cargan desde la tabla "camisetas" (solo lectura por ahora).
+   El perfil del equipo muestra las de la temporada más reciente; al tocar una
+   se abre la ficha con el detalle, las temporadas anteriores y los títulos. */
+const KIT_TIPOS={local:'Local',visita:'Visita',alternativa:'Alternativa',especial:'Especial'};
+const KIT_ORD={local:0,visita:1,alternativa:2,especial:3};
+function teamKits(tid){
+ return (db.camisetas||[]).filter(k=>k.team_id===tid)
+  .sort((a,b)=>String(b.temporada).localeCompare(String(a.temporada))||(KIT_ORD[a.tipo]??9)-(KIT_ORD[b.tipo]??9));
+}
+function kitSeasons(tid){const g={};teamKits(tid).forEach(k=>{(g[k.temporada]=g[k.temporada]||[]).push(k)});return g}
+function kitStrip(tid){
+ const ks=teamKits(tid);if(!ks.length)return'';
+ const cur=ks[0].temporada,list=ks.filter(k=>k.temporada===cur);
+ return `<div class="tkits" aria-label="Camisetas ${esc(cur)}">${list.map(k=>`<button class="tkit" onclick="openKits('${tid}','${k.id}')" title="Ver camiseta ${esc((KIT_TIPOS[k.tipo]||k.tipo).toLowerCase())} ${esc(k.temporada)}"><img src="${esc(k.img)}" alt="Camiseta ${esc(KIT_TIPOS[k.tipo]||k.tipo)} ${esc(k.temporada)}" loading="lazy"><span>${esc(KIT_TIPOS[k.tipo]||k.tipo)}</span></button>`).join('')}</div>`;
+}
+function openKits(tid,kid){
+ const ks=teamKits(tid);if(!ks.length)return;
+ const k=ks.find(x=>x.id===kid)||ks[0],seasons=kitSeasons(tid),cur=ks[0].temporada;
+ const thumb=x=>`<button class="kthumb ${x.id===k.id?'on':''}" onclick="openKits('${tid}','${x.id}')" aria-pressed="${x.id===k.id}"><img src="${esc(x.img)}" alt="" loading="lazy"><span>${esc(KIT_TIPOS[x.tipo]||x.tipo)}</span></button>`;
+ const trophy=x=>x.logro?`<span class="klogro">🏆 ${esc(x.logro)}</span>`:'';
+ const titles=Object.entries(seasons).map(([s,l])=>({s,logro:(l.find(x=>x.logro)||{}).logro})).filter(x=>x.logro);
+ const prev=Object.keys(seasons).filter(s=>s!==cur);
+ const html=`<div class="khead">${crest(tid)}<div><b>${tn(tid)}</b><div class="mu">Camisetas</div></div><button class="kx" onclick="closeModal()" aria-label="Cerrar">✕</button></div>
+ <div class="kmain">
+  <div class="kvit"><img src="${esc(k.img)}" alt="Camiseta ${esc(KIT_TIPOS[k.tipo]||k.tipo)} ${esc(k.temporada)}"><div class="kplate"><b>${esc(KIT_TIPOS[k.tipo]||k.tipo)}</b><span>Temporada ${esc(k.temporada)}</span></div></div>
+  <div class="kinfo">
+   <h4>Camiseta ${esc((KIT_TIPOS[k.tipo]||k.tipo).toLowerCase())} ${esc(k.temporada)}</h4>
+   ${trophy(k)}
+   <dl><dt>Marca</dt><dd>${esc(k.marca||'Por cargar')}</dd><dt>Temporada</dt><dd>${esc(k.temporada)}${k.temporada===cur?' · actual':''}</dd>${k.notas?`<dt>Notas</dt><dd>${esc(k.notas)}</dd>`:''}</dl>
+   <div class="ksec">Temporada ${esc(cur)}</div><div class="kthumbs">${seasons[cur].map(thumb).join('')}</div>
+  </div>
+ </div>
+ <div class="ksec">Camisetas anteriores</div>
+ ${prev.length?prev.map(s=>`<div class="kprev"><div class="kprevh"><b>${esc(s)}</b>${trophy(seasons[s].find(x=>x.logro)||{})}</div><div class="kthumbs">${seasons[s].map(thumb).join('')}</div></div>`).join(''):'<div class="empty">Todavía no hay camisetas de temporadas anteriores.</div>'}
+ <div class="ksec">Títulos</div>
+ ${titles.length?titles.map(x=>`<div class="ktit">🏆 <b>${esc(x.s)}</b> · ${esc(x.logro)}</div>`).join(''):'<div class="empty">Sin títulos registrados.</div>'}`;
+ openModal(html,null,'kitm');
 }
