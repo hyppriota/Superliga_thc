@@ -1,0 +1,290 @@
+[
+  {
+    "id": "sl21",
+    "name": "Union Helenica",
+    "div": "sl2",
+    "fed": "Tucapelandia (TFA)",
+    "dt": "Partenon",
+    "stadium": "Partenón",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/sl21.webp"
+  },
+  {
+    "id": "sl210",
+    "name": "Cabo Verde",
+    "div": "sl2",
+    "fed": "Tucapelandia (TFA)",
+    "dt": null,
+    "stadium": "Dragonautas",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/sl210.webp"
+  },
+  {
+    "id": "sl211",
+    "name": "Belmont",
+    "div": "sl2",
+    "fed": "Tucapelandia (TFA)",
+    "dt": null,
+    "stadium": "Los Pajaritos",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/sl211.webp"
+  },
+  {
+    "id": "sl212",
+    "name": "Artesanos de Cucula",
+    "div": "sl2",
+    "fed": "Islas Hyppia (HYFF)",
+    "dt": "Mac Mckyini",
+    "stadium": "Arena Cucula",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/sl212.webp"
+  },
+  {
+    "id": "sl213",
+    "name": "Dinamo de Ymiir",
+    "div": "sl2",
+    "fed": "Tucapelandia (TFA)",
+    "dt": null,
+    "stadium": "Eldia",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/sl213.webp"
+  },
+  {
+    "id": "sl214",
+    "name": "Universidad de Pipo",
+    "div": "sl2",
+    "fed": "Tucapelandia (TFA)",
+    "dt": null,
+    "stadium": "Universitario",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/sl214.webp"
+  },
+  {
+    "id": "sl215",
+    "name": "Universidad de Relkkikon",
+    "div": "sl2",
+    "fed": "Islas Hyppia (HYFF)",
+    "dt": "Francis Tietie",
+    "stadium": "Campus Arena Relkkikon (Campus Arena)",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/sl215.webp"
+  },
+  {
+    "id": "sl216",
+    "name": "Florencia",
+    "div": "sl2",
+    "fed": "Tucapelandia (TFA)",
+    "dt": null,
+    "stadium": null,
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/sl216.webp"
+  },
+  {
+    "id": "sl22",
+    "name": "Dernetio Flores",
+    "div": "sl2",
+    "fed": "Islas Hyppia (HYFF)",
+    "dt": "Jay Luzarreta",
+    "stadium": "Jardín Bugassli",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/sl22.webp"
+  },
+  {
+    "id": "sl23",
+    "name": "Krystal Vison",
+    "div": "sl2",
+    "fed": "Islas Hyppia (HYFF)",
+    "dt": "Birkhan",
+    "stadium": "Vison Park",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/sl23.webp"
+  },
+  {
+    "id": "sl24",
+    "name": "MF",
+    "div": "sl2",
+    "fed": "Tucapelandia (TFA)",
+    "dt": null,
+    "stadium": "Nacional",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/sl24.webp"
+  },
+  {
+    "id": "sl25",
+    "name": "Puño Yugoslavo",
+    "div": "sl2",
+    "fed": "Tucapelandia (TFA)",
+    "dt": null,
+    "stadium": "Dragan Dzajic",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/sl25.webp"
+  },
+  {
+    "id": "sl26",
+    "name": "Club Mamba",
+    "div": "sl2",
+    "fed": "Islas Hyppia (HYFF)",
+    "dt": "Luc Alserly",
+    "stadium": "Mambalityi",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/sl26.webp"
+  },
+  {
+    "id": "sl27",
+    "name": "Puerto Palos",
+    "div": "sl2",
+    "fed": "Tucapelandia (TFA)",
+    "dt": null,
+    "stadium": "St. Louiis",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/sl27.webp"
+  },
+  {
+    "id": "sl28",
+    "name": "Universidad Valle Alegre",
+    "div": "sl2",
+    "fed": "Tucapelandia (TFA)",
+    "dt": null,
+    "stadium": "Municipal",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/sl28.webp"
+  },
+  {
+    "id": "sl29",
+    "name": "Sporting Calypso",
+    "div": "sl2",
+    "fed": "Tucapelandia (TFA)",
+    "dt": null,
+    "stadium": "El Coloso",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/sl29.webp"
+  },
+  {
+    "id": "thc1",
+    "name": "Index United",
+    "div": "thc",
+    "fed": "Islas Hyppia (HYFF)",
+    "dt": "Boramikki",
+    "stadium": "Indexstadium",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/thc1.webp"
+  },
+  {
+    "id": "thc10",
+    "name": "Atletico Bananero",
+    "div": "thc",
+    "fed": "Islas Hyppia (HYFF)",
+    "dt": "Xabi Alonso",
+    "stadium": "Palacio Musa",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/thc10.webp"
+  },
+  {
+    "id": "thc11",
+    "name": "Valle Alegre",
+    "div": "thc",
+    "fed": "Tucapelandia (TFA)",
+    "dt": null,
+    "stadium": "Municipal",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/thc11.webp"
+  },
+  {
+    "id": "thc12",
+    "name": "Negarax",
+    "div": "thc",
+    "fed": "Tucapelandia (TFA)",
+    "dt": null,
+    "stadium": "Volcánico",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/thc12.webp"
+  },
+  {
+    "id": "thc13",
+    "name": "Anormaleins",
+    "div": "thc",
+    "fed": "Islas Hyppia (HYFF)",
+    "dt": "Carlos Tevez",
+    "stadium": "Parque de los Anormales",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/thc13.webp"
+  },
+  {
+    "id": "thc14",
+    "name": "Mandela",
+    "div": "thc",
+    "fed": "Islas Hyppia (HYFF)",
+    "dt": "Paolo Vanoli",
+    "stadium": "Madiba 1918",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/thc14.webp"
+  },
+  {
+    "id": "thc15",
+    "name": "Union Sapbe",
+    "div": "thc",
+    "fed": "Islas Hyppia (HYFF)",
+    "dt": "Peter Bosz",
+    "stadium": "Club Dy Sapiens",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/thc15.webp"
+  },
+  {
+    "id": "thc16",
+    "name": "Blu Meteoro",
+    "div": "thc",
+    "fed": "Islas Hyppia (HYFF)",
+    "dt": "Francesco Farioli",
+    "stadium": "El Radiante",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/thc16.webp"
+  },
+  {
+    "id": "thc2",
+    "name": "Pichiculpa",
+    "div": "thc",
+    "fed": "Islas Hyppia (HYFF)",
+    "dt": "Cristian Chivu",
+    "stadium": "Coliseo Pichiculpa",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/thc2.webp"
+  },
+  {
+    "id": "thc3",
+    "name": "Okberthat",
+    "div": "thc",
+    "fed": "Islas Hyppia (HYFF)",
+    "dt": "José Mourinho",
+    "stadium": "Oceánico",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/thc3.webp"
+  },
+  {
+    "id": "thc4",
+    "name": "U. san PT",
+    "div": "thc",
+    "fed": "Islas Hyppia (HYFF)",
+    "dt": "Andrea Pirlo",
+    "stadium": "Ottmar Hitzfeld",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/thc4.webp"
+  },
+  {
+    "id": "thc5",
+    "name": "Old Kansas",
+    "div": "thc",
+    "fed": "Islas Hyppia (HYFF)",
+    "dt": "Otamu",
+    "stadium": "El Volcán",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/thc5.webp"
+  },
+  {
+    "id": "thc6",
+    "name": "Bluebird",
+    "div": "thc",
+    "fed": "Tucapelandia (TFA)",
+    "dt": null,
+    "stadium": "El Nido",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/thc6.webp"
+  },
+  {
+    "id": "thc7",
+    "name": "Universidad MF",
+    "div": "thc",
+    "fed": "Tucapelandia (TFA)",
+    "dt": null,
+    "stadium": "Nacional",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/thc7.webp"
+  },
+  {
+    "id": "thc8",
+    "name": "Vxhoco",
+    "div": "thc",
+    "fed": "Tucapelandia (TFA)",
+    "dt": null,
+    "stadium": "Faros Park",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/thc8.webp"
+  },
+  {
+    "id": "thc9",
+    "name": "Deportivo Sapbe",
+    "div": "thc",
+    "fed": "Islas Hyppia (HYFF)",
+    "dt": "Rubén Amorim",
+    "stadium": "Dy Sapiens",
+    "logo_url": "https://thdwohtkvhbynodrnewr.supabase.co/storage/v1/object/public/team-logos/thc9.webp"
+  }
+]
