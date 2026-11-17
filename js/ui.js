@@ -251,22 +251,23 @@ function openKits(tid,kid){
  const ks=teamKits(tid);if(!ks.length)return;
  const k=ks.find(x=>x.id===kid)||ks[0],seasons=kitSeasons(tid),cur=ks[0].temporada;
  const thumb=x=>`<button class="kthumb ${x.id===k.id?'on':''}" onclick="openKits('${tid}','${x.id}')" aria-pressed="${x.id===k.id}"><img src="${esc(x.img)}" alt="" loading="lazy"><span>${esc(KIT_TIPOS[x.tipo]||x.tipo)}</span></button>`;
- const trophy=x=>x.logro?`<span class="klogro">🏆 ${esc(x.logro)}</span>`:'';
- const titles=Object.entries(seasons).map(([s,l])=>({s,logro:(l.find(x=>x.logro)||{}).logro})).filter(x=>x.logro);
- const prev=Object.keys(seasons).filter(s=>s!==cur);
+ const tits=(db.titulos||[]).filter(x=>x.team_id===tid).sort((a,b)=>String(b.temporada).localeCompare(String(a.temporada)));
+ const titleOf=s=>tits.filter(x=>String(x.temporada)===String(s)).map(x=>x.titulo).join(' · ');
+ const badge=s=>{const t=titleOf(s);return t?`<span class="klogro">🏆 ${esc(t)}</span>`:''};
+ const prev=Object.keys(seasons).filter(s=>s!==cur).sort((a,b)=>b.localeCompare(a));
  const html=`<div class="khead">${crest(tid)}<div><b>${tn(tid)}</b><div class="mu">Camisetas</div></div><button class="kx" onclick="closeModal()" aria-label="Cerrar">✕</button></div>
  <div class="kmain">
   <div class="kvit"><img src="${esc(k.img)}" alt="Camiseta ${esc(KIT_TIPOS[k.tipo]||k.tipo)} ${esc(k.temporada)}"><div class="kplate"><b>${esc(KIT_TIPOS[k.tipo]||k.tipo)}</b><span>Temporada ${esc(k.temporada)}</span></div></div>
   <div class="kinfo">
    <h4>Camiseta ${esc((KIT_TIPOS[k.tipo]||k.tipo).toLowerCase())} ${esc(k.temporada)}</h4>
-   ${trophy(k)}
+   ${badge(k.temporada)}
    <dl><dt>Marca</dt><dd>${esc(k.marca||'Por cargar')}</dd><dt>Temporada</dt><dd>${esc(k.temporada)}${k.temporada===cur?' · actual':''}</dd>${k.notas?`<dt>Notas</dt><dd>${esc(k.notas)}</dd>`:''}</dl>
    <div class="ksec">Temporada ${esc(cur)}</div><div class="kthumbs">${seasons[cur].map(thumb).join('')}</div>
   </div>
  </div>
  <div class="ksec">Camisetas anteriores</div>
- ${prev.length?prev.map(s=>`<div class="kprev"><div class="kprevh"><b>${esc(s)}</b>${trophy(seasons[s].find(x=>x.logro)||{})}</div><div class="kthumbs">${seasons[s].map(thumb).join('')}</div></div>`).join(''):'<div class="empty">Todavía no hay camisetas de temporadas anteriores.</div>'}
+ ${prev.length?prev.map(s=>`<div class="kprev"><div class="kprevh"><b>${esc(s)}</b>${badge(s)}</div><div class="kthumbs">${seasons[s].map(thumb).join('')}</div></div>`).join(''):'<div class="empty">Todavía no hay camisetas de temporadas anteriores.</div>'}
  <div class="ksec">Títulos</div>
- ${titles.length?titles.map(x=>`<div class="ktit">🏆 <b>${esc(x.s)}</b> · ${esc(x.logro)}</div>`).join(''):'<div class="empty">Sin títulos registrados.</div>'}`;
+ ${tits.length?tits.map(x=>`<div class="ktit">🏆 <b>${esc(x.temporada)}</b> · ${esc(x.titulo)}</div>`).join(''):'<div class="empty">Sin títulos registrados.</div>'}`;
  openModal(html,null,'kitm');
 }
