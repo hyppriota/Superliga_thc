@@ -271,3 +271,12 @@ function openKits(tid,kid){
  ${tits.length?tits.map(x=>`<div class="ktit">🏆 <b>${esc(x.temporada)}</b> · ${esc(x.titulo)}</div>`).join(''):'<div class="empty">Sin títulos registrados.</div>'}`;
  openModal(html,null,'kitm');
 }
+
+/* Títulos bajo el nombre del equipo: agrupa el mismo título ganado varias veces. */
+function titleLine(tid){
+ const ts=(db.titulos||[]).filter(x=>x.team_id===tid);if(!ts.length)return'';
+ const g={};ts.forEach(x=>(g[x.titulo]=g[x.titulo]||[]).push(String(x.temporada)));
+ const chips=Object.entries(g).map(([t,ys])=>{ys.sort((a,b)=>b.localeCompare(a));
+  return `<span class="ttit" title="${esc(t)} · ${esc(ys.join(', '))}">🏆 ${ys.length>1?ys.length+'× ':''}${esc(t)} <span class="mu">· ${esc(ys.join(', '))}</span></span>`}).join('');
+ return `<div class="ttits">${chips}</div>`;
+}

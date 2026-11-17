@@ -276,3 +276,7 @@ a:hover{text-decoration:underline}
 .kthumb.on{border-color:var(--ac)}.kthumb img{width:62px;height:54px;object-fit:contain}.kthumb span{font-size:11px;font-weight:600}
 .kprev{padding:8px 0;border-top:1px solid var(--ln)}.kprevh{display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .ktit{font-size:13px;padding:4px 0}
+.ttits{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.tcard>div:nth-child(2){flex:1 1 150px;min-width:0}
+.ttit{display:inline-flex;align-items:center;flex-wrap:wrap;gap:3px;background:rgba(201,150,44,.14);border:1px solid var(--gd);border-radius:99px;padding:2px 9px;font-size:11px;font-weight:700;color:var(--tx);line-height:1.35}
+.ttit .mu{font-weight:600}
