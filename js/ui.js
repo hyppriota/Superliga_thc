@@ -277,6 +277,6 @@ function titleLine(tid){
  const ts=(db.titulos||[]).filter(x=>x.team_id===tid);if(!ts.length)return'';
  const g={};ts.forEach(x=>(g[x.titulo]=g[x.titulo]||[]).push(String(x.temporada)));
  const chips=Object.entries(g).map(([t,ys])=>{ys.sort((a,b)=>b.localeCompare(a));
-  return `<span class="ttit" title="${esc(t)} · ${esc(ys.join(', '))}">🏆 ${ys.length>1?ys.length+'× ':''}${esc(t)} <span class="mu">· ${esc(ys.join(', '))}</span></span>`}).join('');
- return `<div class="ttits">${chips}</div>`;
+  return `${ys.length>1?ys.length+'× ':''}${esc(t.replace(/^Campe[oó]n\s+/i,''))} ${esc(ys.join(', '))}`}).join(' · ');
+ return `<div class="ttits" title="Títulos"><span class="tico">🏆</span>${chips}</div>`;
 }
